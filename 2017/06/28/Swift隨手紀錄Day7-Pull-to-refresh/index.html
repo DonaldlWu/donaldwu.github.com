@@ -1,0 +1,254 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>Swift隨手紀錄Day7-Pull to refresh | Deiren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="防止偷懶日記Day7
+目前在實現collectionView之後對cell內資料的reload方式遇到了一點瓶頸
+正在思考有沒有更好的解決方式">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Swift隨手紀錄Day7-Pull to refresh"/>
+  <meta property="og:site_name" content="Deiren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Deiren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> Swift隨手紀錄Day7-Pull to refresh</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>防止偷懶日記Day7</p>
+<p>目前在實現collectionView之後對cell內資料的reload方式遇到了一點瓶頸</p>
+<p>正在思考有沒有更好的解決方式</p>
+<a id="more"></a>
+
+<p>現在的做法首先會新增一個Player.swift檔案來做為選手資料的模型</p>
+<p>需要的內容有照片、姓名、守備位置、背號以及用來儲存成績的文字陣列</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">let</span> order: <span class="type">String</span></span><br><span class="line">    <span class="keyword">let</span> position: <span class="type">String</span></span><br><span class="line">    <span class="keyword">let</span> recordArray: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;</span><br><span class="line">    <span class="keyword">let</span> profileImage: <span class="type">UIImage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了模型就可以在RecordController裡面先實作一些假資料來放看看</p>
+<p>先在class外作出用來存資料的陣列</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> recordArray0 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray1 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray2 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray3 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray4 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray5 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray6 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray7 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br><span class="line"><span class="keyword">var</span> recordArray8 = [<span class="string">"一安"</span>, <span class="string">"三振"</span>, <span class="string">"保送"</span>, <span class="string">"二安"</span>]</span><br></pre></td></tr></table></figure>
+
+<p>在RecordController裡實作新的選手物件</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> players: [<span class="type">Player</span>] = &#123;</span><br><span class="line">    <span class="keyword">let</span> player1 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"一棒"</span>, position: <span class="string">"中外"</span>, recordArray: recordArray0, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player2 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"二棒"</span>, position: <span class="string">"二壘"</span>, recordArray: recordArray1, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player3 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"三棒"</span>, position: <span class="string">"游擊"</span>, recordArray: recordArray2, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player4 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"四棒"</span>, position: <span class="string">"一壘"</span>, recordArray: recordArray3, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player5 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"五棒"</span>, position: <span class="string">"三壘"</span>, recordArray: recordArray4, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player6 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"六棒"</span>, position: <span class="string">"捕手"</span>, recordArray: recordArray5, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player7 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"七棒"</span>, position: <span class="string">"DH"</span>, recordArray: recordArray6, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player8 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"八棒"</span>, position: <span class="string">"右外"</span>, recordArray: recordArray7, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">let</span> player9 = <span class="type">Player</span>(name: <span class="string">"Yohoho"</span>, order: <span class="string">"九棒"</span>, position: <span class="string">"左外"</span>, recordArray: recordArray8, profileImage: <span class="type">UIImage</span>(named: strImage))</span><br><span class="line">    <span class="keyword">return</span> [player1, player2, player3, player4, player5, player6, player7, player8, player9]</span><br><span class="line">&#125;()</span><br></pre></td></tr></table></figure>
+
+<p>接下來把昨天在RecordCell.swift內實現的button.addTarget先改放到RecordController.swift內</p>
+<p>改在cellForItemAt這個function內來處理</p>
+<p>順便將上面實作的假資料放進cell裡面</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">collectionView</span><span class="params">(<span class="number">_</span> collectionView: UICollectionView, cellForItemAt indexPath: IndexPath)</span></span> -&gt; <span class="type">UICollectionViewCell</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, <span class="keyword">for</span>: indexPath) <span class="keyword">as</span>? <span class="type">RecordCell</span></span><br><span class="line">    cell?.backgroundColor = .blue</span><br><span class="line">    cell?.sentButton.tag = indexPath.item</span><br><span class="line">    <span class="keyword">let</span> player = players[indexPath.item]</span><br><span class="line">    cell?.sentButton.addTarget(<span class="keyword">self</span>, action: #selector(sentRecord(sender:)), <span class="keyword">for</span>: .touchUpInside)</span><br><span class="line">    cell?.profileImage.image = player.profileImage</span><br><span class="line">    cell?.orderLabel.text = player.order + <span class="string">" - "</span> + player.position</span><br><span class="line">    cell?.recordText.text = <span class="type">String</span>(describing: player.recordArray)</span><br><span class="line">    <span class="keyword">return</span> cell!</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接著把sentRecord的function也拿到這裡來修改一下</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sentRecord</span><span class="params">(sender: UIButton)</span></span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"Hit Button\(sender.tag)"</span>)</span><br><span class="line">    <span class="keyword">switch</span> sender.tag &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">        recordArray0.append(<span class="string">"New Record1"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        recordArray1.append(<span class="string">"New Record1"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        recordArray2.append(<span class="string">"New Record2"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        recordArray3.append(<span class="string">"New Record3"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">        recordArray4.append(<span class="string">"New Record4"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">        recordArray5.append(<span class="string">"New Record5"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">        recordArray6.append(<span class="string">"New Record6"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">7</span>:</span><br><span class="line">        recordArray7.append(<span class="string">"New Record7"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">8</span>:</span><br><span class="line">        recordArray8.append(<span class="string">"New Record8"</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">DispatchQueue</span>.main.async &#123;</span><br><span class="line">        <span class="keyword">self</span>.collectionView?.reloadData()</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>目前雖然點擊button可以順利顯示是哪一個button以及更新array內的資料</p>
+<p>但是畫面並沒有跟著更新，讓我好好研究一下到底是為什麼…</p>
+<p>不過在找資料途中順手把下拉更新給放上去了(雖然也不會更新（￣ c￣）y▂ξ)</p>
+<p>就當作經驗玩玩看摟，大概長這樣</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> refreshControl:<span class="type">UIRefreshControl!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">    collectionView?.backgroundColor = .green</span><br><span class="line">    collectionView?.register(<span class="type">RecordCell</span>.<span class="keyword">self</span>, forCellWithReuseIdentifier: cellId)</span><br><span class="line">    <span class="keyword">self</span>.setNeedsStatusBarAppearanceUpdate()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.refreshControl = <span class="type">UIRefreshControl</span>()</span><br><span class="line">    <span class="keyword">self</span>.refreshControl.attributedTitle = <span class="type">NSAttributedString</span>(string: <span class="string">"Reloading"</span>)</span><br><span class="line">    <span class="keyword">self</span>.refreshControl.addTarget(<span class="keyword">self</span>, action: #selector(refresh), <span class="keyword">for</span>: .valueChanged)</span><br><span class="line">    collectionView!.addSubview(refreshControl)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">refresh</span><span class="params">(sender:AnyObject)</span></span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">DispatchQueue</span>.main.async &#123;</span><br><span class="line">        <span class="keyword">self</span>.collectionView?.reloadData()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.refreshControl.endRefreshing()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>實際大概長這樣</p>
+<img src="/2017/06/28/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day7-Pull-to-refresh/Reloading.png" class="">
+
+
+
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2017/06/29/Swift隨手紀錄Day8-CollectionView-Reload/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2017/06/27/Swift隨手紀錄Day6-UI調整/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2017-06-28 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/Swift/">Swift<span>32</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2021 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

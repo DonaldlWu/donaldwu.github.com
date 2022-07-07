@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>Swift隨手紀錄Day12-新首頁 | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="紀錄的選項告一段落之後
+接下來當然要讓使用者可以輸入(或從其他地方下載)被紀錄人員的相關資訊
+因此應該需要一個讓使用者新增或修改球隊人員的頁面
+甚至加上可以儲存成一支(或以上)隊伍的人員資料
+為此就需要一個首頁
+把首頁作為起點可以進行人員(球隊)的新增
+跟接上之前所做好的紀錄畫面的地方">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Swift隨手紀錄Day12-新首頁"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> Swift隨手紀錄Day12-新首頁</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>紀錄的選項告一段落之後</p>
+<p>接下來當然要讓使用者可以輸入(或從其他地方下載)被紀錄人員的相關資訊</p>
+<p>因此應該需要一個讓使用者新增或修改球隊人員的頁面</p>
+<p>甚至加上可以儲存成一支(或以上)隊伍的人員資料</p>
+<p>為此就需要一個首頁</p>
+<p>把首頁作為起點可以進行人員(球隊)的新增</p>
+<p>跟接上之前所做好的紀錄畫面的地方</p>
+<span id="more"></span>
+
+<p>今天應該要讓畫面長這樣</p>
+<img src="/donaldwu.github.com/2017/07/03/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day12-%E6%96%B0%E9%A6%96%E9%A0%81/Home.png" class="">
+
+<p>一樣帶有navigationbar的UIViewController</p>
+<p>畫面中下位置有個Start的按鈕接到之前做的紀錄畫面</p>
+<p>首先先在Controller內新增一個HomeController.swift</p>
+<p>內容如下</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HomeController</span>: <span class="title class_">UIViewController</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> startButton: <span class="type">UIButton</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> button <span class="operator">=</span> <span class="type">UIButton</span>()</span><br><span class="line">        button.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        button.setTitle(<span class="string">&quot;Start&quot;</span>, for: .normal)</span><br><span class="line">        button.layer.borderColor <span class="operator">=</span> <span class="type">UIColor</span>.red.cgColor</span><br><span class="line">        button.layer.borderWidth <span class="operator">=</span> <span class="number">2</span></span><br><span class="line">        button.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(toRecordController), for: .touchUpInside)</span><br><span class="line">        <span class="keyword">return</span> button</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">        <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">        </span><br><span class="line">        view.backgroundColor <span class="operator">=</span> .cyan</span><br><span class="line">        view.addSubview(startButton)</span><br><span class="line">        </span><br><span class="line">        startButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: <span class="operator">-</span><span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        startButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        startButton.heightAnchor.constraint(equalToConstant: <span class="number">48</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        startButton.widthAnchor.constraint(equalToConstant: <span class="number">96</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">toRecordController</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> controller <span class="operator">=</span> <span class="type">RecordController</span>(collectionViewLayout: <span class="type">UICollectionViewFlowLayout</span>())</span><br><span class="line">        present(<span class="type">UINavigationController</span>(rootViewController: controller), animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5到13行實作轉移畫面用的button，並在viewDidLoad裡面新增子畫面跟設定anchor來定位</p>
+<p>最後的function則設定點擊後轉移的動作，我們先將畫面轉移到RecordController</p>
+<p>接下來修改AppDelegate.swift內程式開啟時送出的window</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">application</span>(<span class="keyword">_</span> <span class="params">application</span>: <span class="type">UIApplication</span>, <span class="params">didFinishLaunchingWithOptions</span> <span class="params">launchOptions</span>: [<span class="params">UIApplicationLaunchOptionsKey</span>: <span class="keyword">Any</span>]<span class="operator">?</span>) -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">    </span><br><span class="line">    window <span class="operator">=</span> <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.main.bounds)</span><br><span class="line">    window<span class="operator">?</span>.makeKeyAndVisible()</span><br><span class="line">    window<span class="operator">?</span>.rootViewController <span class="operator">=</span> <span class="type">UINavigationController</span>(rootViewController: <span class="type">HomeController</span>())</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>執行一下看看結果</p>
+<img src="/donaldwu.github.com/2017/07/03/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day12-%E6%96%B0%E9%A6%96%E9%A0%81/HomeDefault.png" class="">
+
+<p>等等，好像哪裡怪怪的…</p>
+<p>navigationController的size好像怪怪的？？？</p>
+<p>所以我說那個statusBar跑去哪了？？？</p>
+<p>沒事～先喝杯珍奶壓壓驚（￣ c￣）y▂ξ</p>
+<p>一直覺得除了看影片之外還是看得到statusBar比較好＠＠</p>
+<p>畢竟一場球也得打個兩個多小時，邊紀錄還要一直出去看時間多麻煩啊</p>
+<p>回到HomeController在viewDidLoad裡面加上這一行來執行一下</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;LandScape StatusBarHidden default value is <span class="subst">\(prefersStatusBarHidden)</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>結果長這樣</p>
+<img src="/donaldwu.github.com/2017/07/03/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day12-%E6%96%B0%E9%A6%96%E9%A0%81/statusDefault.png" class="">
+
+<p>查了才知道原來蘋果把畫面橫躺之後的statusBarHidden預設為true</p>
+<p>那只要把它改成false就好了對吧</p>
+<p>歹誌爪隊摀戲憨人想Ａㄏㄧㄚˋ尼甘單？？？</p>
+<p>prefersStatusBarHidden給他option+左鍵按下去跳出來這東西</p>
+<img src="/donaldwu.github.com/2017/07/03/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day12-%E6%96%B0%E9%A6%96%E9%A0%81/prefersStatusBarHidden.png" class="">
+
+<p>在垂直被壓縮的情況下iOS8以上預設就是藏起來</p>
+<p>而且還是{ get }，read-only的變數</p>
+<p>不能直接用，只能把它整個覆寫掉了</p>
+<p>在viewDidLoad之前覆寫掉再執行看看</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">var</span> prefersStatusBarHidden: <span class="type">Bool</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/donaldwu.github.com/2017/07/03/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day12-%E6%96%B0%E9%A6%96%E9%A0%81/Day12.gif" class="">
+
+<p>這樣看來就一切正常了</p>
+<p>最後這裡有在RecordCell.swift跟RecordController.swift做一點修改</p>
+<p>新增球員名稱的欄位以及調整一下UI的位置</p>
+<p>新增以及修改內容如下</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> nameLabel: <span class="type">UILabel</span> <span class="operator">=</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> label <span class="operator">=</span> <span class="type">UILabel</span>()</span><br><span class="line">    label.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">    label.backgroundColor <span class="operator">=</span> .orange</span><br><span class="line">    label.font <span class="operator">=</span> <span class="type">UIFont</span>.boldSystemFont(ofSize: <span class="number">12</span>)</span><br><span class="line">    label.textAlignment <span class="operator">=</span> .center</span><br><span class="line">    label.adjustsFontSizeToFitWidth <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    label.text <span class="operator">=</span> <span class="string">&quot;Yohoho&quot;</span></span><br><span class="line">    <span class="keyword">return</span> label</span><br><span class="line">&#125;()</span><br><span class="line">	</span><br><span class="line"> <span class="keyword">func</span> <span class="title function_">setupView</span>() &#123;</span><br><span class="line">    backgroundColor <span class="operator">=</span> .yellow</span><br><span class="line">    addSubview(profileImage)</span><br><span class="line">    addSubview(recordText)</span><br><span class="line">    addSubview(sentButton)</span><br><span class="line">    addSubview(undoButton)</span><br><span class="line">    addSubview(orderLabel)</span><br><span class="line">    addSubview(nameLabel)</span><br><span class="line">    </span><br><span class="line">    profileImage.topAnchor.constraint(equalTo: <span class="keyword">self</span>.topAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    profileImage.leftAnchor.constraint(equalTo: <span class="keyword">self</span>.leftAnchor, constant: <span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    profileImage.heightAnchor.constraint(equalToConstant: <span class="number">64</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    profileImage.widthAnchor.constraint(equalToConstant: <span class="number">64</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    </span><br><span class="line">    sentButton.centerYAnchor.constraint(equalTo: <span class="keyword">self</span>.centerYAnchor, constant: <span class="operator">-</span><span class="number">18</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    sentButton.rightAnchor.constraint(equalTo: <span class="keyword">self</span>.rightAnchor, constant: <span class="operator">-</span><span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    sentButton.widthAnchor.constraint(equalToConstant: <span class="number">60</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    sentButton.heightAnchor.constraint(equalToConstant: <span class="number">32</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    </span><br><span class="line">    undoButton.centerYAnchor.constraint(equalTo: <span class="keyword">self</span>.centerYAnchor, constant: <span class="number">18</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    undoButton.rightAnchor.constraint(equalTo: <span class="keyword">self</span>.rightAnchor, constant: <span class="operator">-</span><span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    undoButton.widthAnchor.constraint(equalToConstant: <span class="number">60</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    undoButton.heightAnchor.constraint(equalToConstant: <span class="number">32</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    </span><br><span class="line">    recordText.leftAnchor.constraint(equalTo: profileImage.rightAnchor, constant: <span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    recordText.rightAnchor.constraint(equalTo: sentButton.leftAnchor, constant: <span class="operator">-</span><span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    recordText.centerYAnchor.constraint(equalTo: <span class="keyword">self</span>.centerYAnchor, constant: <span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    recordText.heightAnchor.constraint(equalToConstant: <span class="number">32</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    </span><br><span class="line">    orderLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    orderLabel.bottomAnchor.constraint(equalTo: <span class="keyword">self</span>.bottomAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    orderLabel.leftAnchor.constraint(equalTo: profileImage.leftAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    orderLabel.rightAnchor.constraint(equalTo: profileImage.rightAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    </span><br><span class="line">    nameLabel.topAnchor.constraint(equalTo: <span class="keyword">self</span>.topAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    nameLabel.leftAnchor.constraint(equalTo: recordText.leftAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    nameLabel.bottomAnchor.constraint(equalTo: recordText.topAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">    nameLabel.widthAnchor.constraint(equalToConstant: <span class="number">84</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>RecordCell.swift新增lable跟調整UI</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">collectionView</span>(<span class="keyword">_</span> <span class="params">collectionView</span>: <span class="type">UICollectionView</span>, <span class="params">cellForItemAt</span> <span class="params">indexPath</span>: <span class="type">IndexPath</span>) -&gt; <span class="type">UICollectionViewCell</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> cell <span class="operator">=</span> collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) <span class="keyword">as?</span> <span class="type">RecordCell</span></span><br><span class="line">    <span class="keyword">let</span> player <span class="operator">=</span> players[indexPath.item]</span><br><span class="line">    cell<span class="operator">?</span>.backgroundColor <span class="operator">=</span> .blue</span><br><span class="line">    cell<span class="operator">?</span>.sentButton.tag <span class="operator">=</span> indexPath.item</span><br><span class="line">    cell<span class="operator">?</span>.undoButton.tag <span class="operator">=</span> indexPath.item</span><br><span class="line">    cell<span class="operator">?</span>.sentButton.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(sentRecord(sender:)), for: .touchUpInside)</span><br><span class="line">    cell<span class="operator">?</span>.undoButton.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(uudoRecord(sender:)), for: .touchUpInside)</span><br><span class="line">    cell<span class="operator">?</span>.profileImage.image <span class="operator">=</span> player.profileImage</span><br><span class="line">    cell<span class="operator">?</span>.nameLabel.text <span class="operator">=</span> player.name</span><br><span class="line">    cell<span class="operator">?</span>.orderLabel.text <span class="operator">=</span> player.order <span class="operator">+</span> <span class="string">&quot; - &quot;</span> <span class="operator">+</span> player.position</span><br><span class="line">    cell<span class="operator">?</span>.recordText.text <span class="operator">=</span> <span class="type">String</span>(describing: player.recordArray)</span><br><span class="line">    <span class="keyword">return</span> cell<span class="operator">!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>RecordController則將資料在生成cell時放入label</p>
+<p>晚點再來做新增球隊與製作紀錄</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2017/07/04/Swift隨手紀錄Day13-新首頁Part2/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2017/07/02/Swift隨手紀錄Day11-PickerView-Part3/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2017-07-03 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/Swift/">Swift<span>32</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

@@ -1,0 +1,286 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>Swift隨手紀錄Day30-UIPickerView | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="今天有一整天可以用，花了一個早上Debug…
+下午一咪眼就好幾小時噴了…
+不過好歹也是把之前留著的自製popView裡面裝著UIPickerView的功能往前推進了一點
+也學到了不少新東西
+然後TabBar也先把基本的部分做好，順便重也寫了不少部分
+但這片還是先看之前困擾我有點久的讓畫面跳出UIPickerView">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Swift隨手紀錄Day30-UIPickerView"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> Swift隨手紀錄Day30-UIPickerView</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>今天有一整天可以用，花了一個早上Debug…</p>
+<p>下午一咪眼就好幾小時噴了…</p>
+<p>不過好歹也是把之前留著的自製popView裡面裝著UIPickerView的功能往前推進了一點</p>
+<p>也學到了不少新東西</p>
+<p>然後TabBar也先把基本的部分做好，順便重也寫了不少部分</p>
+<p>但這片還是先看之前困擾我有點久的讓畫面跳出UIPickerView</p>
+<span id="more"></span>
+
+<p>一樣先看Demo</p>
+<img src="/donaldwu.github.com/2017/07/21/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day30/Day30Demo.gif" class="">
+
+<p>不過其實進度已經離上一次詳細寫出內容差了大概五光年遠…</p>
+<p>認真回頭看真的不少該改寫的部分</p>
+<p>這次也是在彼得潘講過之後才真的好好了解了navigationController推送的細節</p>
+<p>然後才發現好像可以這樣做做看</p>
+<p>首先在記錄的畫面點擊UPDATE時會觸發<code>sentRecord</code>這個function</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">sentRecord</span>(<span class="params">sender</span>: <span class="type">UIButton</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> controller <span class="operator">=</span> <span class="type">RecordPickerController</span>()</span><br><span class="line">    controller.rowInRecordArray <span class="operator">=</span> sender.tag</span><br><span class="line">    controller.players <span class="operator">=</span> <span class="keyword">self</span>.players</span><br><span class="line">    controller.modalPresentationStyle <span class="operator">=</span> .overCurrentContext</span><br><span class="line">    present(controller, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第3, 4行是用來傳資料的可以先忽視</p>
+<p>主要是先設定送出來的controller的modalPresentationStyle</p>
+<p>然後用present送出新畫面</p>
+<p>然後來到要送出的畫面來</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RecordPickerController</span>: <span class="title class_">UIViewController</span>, <span class="title class_">UIPickerViewDelegate</span>, <span class="title class_">UIPickerViewDataSource</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> recordtypeArray <span class="operator">=</span> [<span class="string">&quot;H&quot;</span>, <span class="string">&quot;BB&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="string">&quot;K&quot;</span>, <span class="string">&quot;SF&quot;</span>]</span><br><span class="line">    <span class="keyword">let</span> recordDetialArray <span class="operator">=</span> [[<span class="string">&quot;H&quot;</span>, <span class="string">&quot;2B&quot;</span>, <span class="string">&quot;3B&quot;</span>, <span class="string">&quot;HR&quot;</span>], [<span class="string">&quot;BB&quot;</span>, <span class="string">&quot;HBP&quot;</span>], [<span class="string">&quot;E1&quot;</span>, <span class="string">&quot;E2&quot;</span>, <span class="string">&quot;E3&quot;</span>, <span class="string">&quot;E4&quot;</span>, <span class="string">&quot;E5&quot;</span>, <span class="string">&quot;E6&quot;</span>, <span class="string">&quot;E7&quot;</span>, <span class="string">&quot;E8&quot;</span>, <span class="string">&quot;E9&quot;</span>], [<span class="string">&quot;K&quot;</span>, <span class="string">&quot;K&quot;</span>], [<span class="string">&quot;SF&quot;</span>, <span class="string">&quot;SH&quot;</span>]]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> players <span class="operator">=</span> [<span class="type">Player</span>]()</span><br><span class="line">    <span class="keyword">var</span> recordPickerView: <span class="type">UIPickerView</span>!</span><br><span class="line">    <span class="keyword">var</span> tempRecord: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;H&quot;</span></span><br><span class="line">    <span class="keyword">var</span> rowInRecordArray <span class="operator">=</span> <span class="type">Int</span>()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> popView: <span class="type">UIView</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> view <span class="operator">=</span> <span class="type">UIView</span>()</span><br><span class="line">        view.backgroundColor <span class="operator">=</span> .white</span><br><span class="line">        view.layer.borderWidth <span class="operator">=</span> <span class="number">3</span></span><br><span class="line">        view.backgroundColor <span class="operator">=</span> .cyan</span><br><span class="line">        view.layer.cornerRadius <span class="operator">=</span> <span class="number">5</span></span><br><span class="line">        view.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        <span class="keyword">return</span> view</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> addButton: <span class="type">UIButton</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> button <span class="operator">=</span> <span class="type">UIButton</span>()</span><br><span class="line">        button.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        button.backgroundColor <span class="operator">=</span> .purple</span><br><span class="line">        button.layer.cornerRadius <span class="operator">=</span> <span class="number">5</span></span><br><span class="line">        button.layer.borderColor <span class="operator">=</span> <span class="type">UIColor</span>.blue.cgColor</span><br><span class="line">        button.layer.borderWidth <span class="operator">=</span> <span class="number">2</span></span><br><span class="line">        button.setTitle(<span class="string">&quot;UPDATE&quot;</span>, for: .normal)</span><br><span class="line">        button.titleLabel<span class="operator">?</span>.font <span class="operator">=</span> <span class="type">UIFont</span>.boldSystemFont(ofSize: <span class="number">13</span>)</span><br><span class="line">        button.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(sendRecordBack), for: .touchUpInside)</span><br><span class="line">        <span class="keyword">return</span> button</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">        <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">        view.backgroundColor <span class="operator">=</span> .clear</span><br><span class="line">        </span><br><span class="line">        recordPickerView <span class="operator">=</span> <span class="type">UIPickerView</span>()</span><br><span class="line">        recordPickerView.frame <span class="operator">=</span> <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="keyword">self</span>.view.bounds.width <span class="operator">-</span> <span class="number">12</span>, height: <span class="number">200</span>)</span><br><span class="line">        recordPickerView.showsSelectionIndicator <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        recordPickerView.delegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">        recordPickerView.dataSource <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">        recordPickerView.backgroundColor <span class="operator">=</span> .cyan</span><br><span class="line">        </span><br><span class="line">        view.addSubview(popView)</span><br><span class="line">        </span><br><span class="line">        popView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        popView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        popView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: <span class="operator">-</span><span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        popView.heightAnchor.constraint(equalToConstant: <span class="number">250</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        popView.addSubview(recordPickerView)</span><br><span class="line">        popView.addSubview(addButton)</span><br><span class="line">        </span><br><span class="line">        addButton.bottomAnchor.constraint(equalTo: recordPickerView.bottomAnchor, constant: <span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        addButton.widthAnchor.constraint(equalToConstant: <span class="number">64</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        addButton.heightAnchor.constraint(equalToConstant: <span class="number">36</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">sendRecordBack</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> controller <span class="operator">=</span> <span class="type">GameTabBarController</span>()</span><br><span class="line">        <span class="keyword">switch</span> rowInRecordArray &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">0</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">1</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">2</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">3</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">4</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">5</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">6</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">7</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">7</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">case</span> <span class="number">8</span>:</span><br><span class="line">            <span class="keyword">self</span>.players[<span class="number">8</span>].recordArray.append(tempRecord)</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        controller.players <span class="operator">=</span> <span class="keyword">self</span>.players</span><br><span class="line">        controller.modalPresentationStyle <span class="operator">=</span> .overFullScreen</span><br><span class="line">        present(controller, animated: <span class="literal">false</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">numberOfComponents</span>(<span class="params">in</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>) -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">pickerView</span>(<span class="keyword">_</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>, <span class="params">numberOfRowsInComponent</span> <span class="params">component</span>: <span class="type">Int</span>) -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">0</span> &#123;            </span><br><span class="line">            <span class="keyword">return</span> recordtypeArray.count</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> recordDetialArray[recordPickerView.selectedRow(inComponent: <span class="number">0</span>)].count</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">pickerView</span>(<span class="keyword">_</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>, <span class="params">titleForRow</span> <span class="params">row</span>: <span class="type">Int</span>, <span class="params">forComponent</span> <span class="params">component</span>: <span class="type">Int</span>) -&gt; <span class="type">String</span>? &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> recordtypeArray[row]</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> recordDetialArray[recordPickerView.selectedRow(inComponent: <span class="number">0</span>)][row]</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">pickerView</span>(<span class="keyword">_</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>, <span class="params">didSelectRow</span> <span class="params">row</span>: <span class="type">Int</span>, <span class="params">inComponent</span> <span class="params">component</span>: <span class="type">Int</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">0</span> &#123;</span><br><span class="line">            recordPickerView.reloadComponent(<span class="number">1</span>)</span><br><span class="line">            tempRecord <span class="operator">=</span> recordDetialArray[row][<span class="number">0</span>]</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">1</span> &#123;</span><br><span class="line">            tempRecord <span class="operator">=</span> recordDetialArray[recordPickerView.selectedRow(inComponent: <span class="number">0</span>)][row]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>邊寫邊覺得自己對資料的傳遞跟儲存寫得真渣 （￣ c￣）y▂ξ</p>
+<p>只差沒翻桌了…</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2017/08/11/後台使用者註冊-登錄系統Demo/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2017/07/20/Swift隨手紀錄Day29-at-medium-Xcode9模擬器全螢幕/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2017-07-21 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/Swift/">Swift<span>32</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

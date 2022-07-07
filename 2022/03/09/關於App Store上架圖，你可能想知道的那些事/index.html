@@ -1,0 +1,328 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>關於App Store上架圖，你可能想知道的那些事 | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="在公司，要上架的時候通常都有 Design Team 提供設計好的上架圖。
+但當你作為一名獨立開發者，這些事就都得自己處理拉。
+抑或是你家設計初來乍到對 App Store 上架圖的規則不太了解，你得跟他解釋一下需求。
+這邊就來統整一下過去我碰過的問題，以及一些好用的工具。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="關於App Store上架圖，你可能想知道的那些事"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> 關於App Store上架圖，你可能想知道的那些事</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>在公司，要上架的時候通常都有 Design Team 提供設計好的上架圖。</p>
+<p>但當你作為一名獨立開發者，這些事就都得自己處理拉。</p>
+<p>抑或是你家設計初來乍到對 App Store 上架圖的規則不太了解，你得跟他解釋一下需求。</p>
+<p>這邊就來統整一下過去我碰過的問題，以及一些好用的工具。</p>
+<span id="more"></span>
+
+<h3 id="1-我需要哪些尺寸的上架圖？"><a href="#1-我需要哪些尺寸的上架圖？" class="headerlink" title="1. 我需要哪些尺寸的上架圖？"></a>1. 我需要哪些尺寸的上架圖？</h3><hr>
+<p>請看 Apple 提供的 <a target="_blank" rel="noopener" href="https://help.apple.com/app-store-connect/#/devd274dd925">Screenshot specifications</a></p>
+<p>細看 Screenshot specifications 裡提供的資訊，</p>
+<p>我們可以依據 Requirement 以及 Screenshot source 這兩個欄位裡是不是必要，是不是有預設值來決定我們要提供哪些尺寸的截圖。</p>
+<p>依照目前蘋果的要求，如果我想上架一款 iOS app，那我會需要提供 </p>
+<table>
+<thead>
+<tr>
+<th>6.5 inch</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1284 x 2778 pixels (portrait)<br>2778 x 1284 pixels (landscape)<br>1242 x 2688 pixels (portrait)<br>2688 x 1242 pixels (landscape)</td>
+</tr>
+</tbody></table>
+<br>
+
+<table>
+<thead>
+<tr>
+<th>5.5 inch</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1242 x 2208 pixels (portrait)<br>2208 x 1242 pixels (landscape)</td>
+</tr>
+</tbody></table>
+<br>
+
+<p>如果 iPad 也可以用的話，加上</p>
+<table>
+<thead>
+<tr>
+<th>12.9 inch</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2048 x 2732 pixels (portrait)<br>2732 x 2048 pixels (landscape)</td>
+</tr>
+</tbody></table>
+<br>
+
+<h3 id="2-調整圖片大小的工具網站"><a href="#2-調整圖片大小的工具網站" class="headerlink" title="2. 調整圖片大小的工具網站"></a>2. 調整圖片大小的工具網站</h3><hr>
+<p><a target="_blank" rel="noopener" href="https://www.iloveimg.com/zh-tw">iloveimg</a></p>
+<p>這網站把圖丟進去就可以自己調整需要的大小拉。</p>
+<p>這方法簡單粗暴，可謂獨立開發者的好朋友。</p>
+<br>
+
+<h3 id="3-iPhone-外殼？"><a href="#3-iPhone-外殼？" class="headerlink" title="3. iPhone 外殼？"></a>3. iPhone 外殼？</h3><hr>
+<p><a target="_blank" rel="noopener" href="https://www.appstorescreenshot.com/">App Store Screenshot Generator</a></p>
+<p>這網站可以讓你選擇一些裝置外殼，加上背景以及一些廣告詞。</p>
+<p>而 <a target="_blank" rel="noopener" href="https://mockuphone.com/">MockUPhone</a> 可以幫你的圖片單純的加上手機殼，並產生直立跟橫躺兩種圖片。</p>
+<br>
+
+<h3 id="4-我的-Side-Project-想自己想畫圖？"><a href="#4-我的-Side-Project-想自己想畫圖？" class="headerlink" title="4. 我的 Side Project 想自己想畫圖？"></a>4. 我的 Side Project 想自己想畫圖？</h3><hr>
+<p>作為一款免費工具我想 <a target="_blank" rel="noopener" href="https://www.figma.com/?fuid=">Figma</a> 是個不錯的選擇。</p>
+<p>畫完還能利用他提供的 Export 功能把圖輸出。</p>
+<br>
+
+<h3 id="5-圖像不能包含alpha通道或透明度？"><a href="#5-圖像不能包含alpha通道或透明度？" class="headerlink" title="5. 圖像不能包含alpha通道或透明度？"></a>5. 圖像不能包含alpha通道或透明度？</h3><hr>
+<p>簡單處理可以用 preview 打開圖片 file -&gt; export 把 alpha 的勾選清掉</p>
+<br>
+
+<h3 id="6-因為圖片被退件？"><a href="#6-因為圖片被退件？" class="headerlink" title="6. 因為圖片被退件？"></a>6. 因為圖片被退件？</h3><p>我遇過的是外框沒有依照尺寸給，我統一都用 6.5 inch 瀏海家族的 iPhoneX 外殼放在 5.5 inch 圖上然後就被退了🤪</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2022/03/15/Swift與Vim/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2021/11/30/nvim + shell script 漂浮視窗快速筆記/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2022-03-09 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/上架圖/">上架圖<span>1</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

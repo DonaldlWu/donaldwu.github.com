@@ -1,0 +1,488 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>利用 Bash script 簡化 iOS ipa OTA 發佈流程 (使用 Dropbox) | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="去年 Fabric 確定合併回 Firebase 後就決定要另外找地方放出測試版給 QA
+在內網架了一個簡單的網站
+讓 QA 可以用手機打開網頁直接下載測試版 app
+但因為 OTA 機制需要 Https 
+存放 manifest.plist 跟 ipa 的地方就選擇了 Dropbox 
+選擇的原因讓我後面再詳述
+
+
+然後因為手動上傳檔案跟 manifest 的修改過程太繁雜了，實在不是給人用的
+簡單敘述就是
+
+
+
+包好 ipa
+
+上傳 ipa 到 Dropbox
+
+分享 ipa 的鏈結
+
+將分享鏈結填入 manifest.plist
+
+將 manifest.plist 上傳至 Dropbox
+
+分享 manifest.plist 的鏈結
+
+將 manifest.plist 的鏈結的內容從 dropbox.com
+
+
+修改成下載用鏈結 dl.dropboxusercontent.com
+
+依照 itms-service 協議的格式將修改好的 manifest.plist 的下載鏈結放入網站
+
+
+
+光寫完這一串就累了 @@
+所以就決定寫點 Script 幫忙處理上面那一大串雜事吧
+因為太多了這篇就只處理從 ipa 上傳到 dropbox 到可以下載的部分">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="利用 Bash script 簡化 iOS ipa OTA 發佈流程 (使用 Dropbox)"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> 利用 Bash script 簡化 iOS ipa OTA 發佈流程 (使用 Dropbox)</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>去年 Fabric 確定合併回 Firebase 後就決定要另外找地方放出測試版給 QA</p>
+<p>在內網架了一個簡單的網站</p>
+<p>讓 QA 可以用手機打開網頁直接下載測試版 app</p>
+<p>但因為 OTA 機制需要 Https </p>
+<p>存放 manifest.plist 跟 ipa 的地方就選擇了 Dropbox </p>
+<p>選擇的原因讓我後面再詳述</p>
+<br/>
+
+<p>然後因為手動上傳檔案跟 manifest 的修改過程太繁雜了，實在不是給人用的</p>
+<p>簡單敘述就是</p>
+<br/>
+
+<ol>
+<li><p>包好 ipa</p>
+</li>
+<li><p>上傳 ipa 到 Dropbox</p>
+</li>
+<li><p>分享 ipa 的鏈結</p>
+</li>
+<li><p>將分享鏈結填入 manifest.plist</p>
+</li>
+<li><p>將 manifest.plist 上傳至 Dropbox</p>
+</li>
+<li><p>分享 manifest.plist 的鏈結</p>
+</li>
+<li><p>將 manifest.plist 的鏈結的內容從 dropbox.com</p>
+</li>
+</ol>
+<p>修改成下載用鏈結 dl.dropboxusercontent.com</p>
+<ol start="8">
+<li>依照 itms-service 協議的格式將修改好的 manifest.plist 的下載鏈結放入網站</li>
+</ol>
+<br/>
+
+<p>光寫完這一串就累了 @@</p>
+<p>所以就決定寫點 Script 幫忙處理上面那一大串雜事吧</p>
+<p>因為太多了這篇就只處理從 ipa 上傳到 dropbox 到可以下載的部分</p>
+<span id="more"></span>
+
+<p>首先是選擇 Dropbox 的理由</p>
+<p>首先是 OTA 需要下載位置支援 https</p>
+<p>自己架在內網內的 Server 不太想弄</p>
+<img src="https://dl.dropboxusercontent.com/s/rucfbg0xbxo1w7b/%E7%9B%B8%E7%89%87%202020-2-13%20%E4%B8%8B%E5%8D%883%2001%2035.jpg">
+
+<br/>
+
+<p>所以目標就轉移至簡單使用的雲端儲存服務</p>
+<p>看了一下網路上也很多人分享使用 Dropbox 的文章</p>
+<p>實作起來並不困難</p>
+<p>最重要的是我在 Dropbox 的文件上找到了我需要的功能</p>
+<p>就是能利用 POST 進行<strong>檔案的上傳</strong>以及前面提到的<strong>分享鏈結的產生</strong></p>
+<br/>
+
+<p>這樣目標就明確了</p>
+<p>在 ipa 打包完成之後，執行 script 去執行上面那一串工作</p>
+<p>首先打開 <a target="_blank" rel="noopener" href="https://www.dropbox.com/developers/documentation/http/documentation">Dropbox 文件</a></p>
+<p>Let’s go ~</p>
+<h3 id="上傳-API"><a href="#上傳-API" class="headerlink" title="上傳 API"></a>上傳 API</h3><p>找到 <code>upload</code> 這隻 API 的說明</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST https://content.dropboxapi.com/2/files/upload \</span><br><span class="line">    --header &quot;Authorization: Bearer &lt;get access token&gt;&quot; \</span><br><span class="line">    --header &quot;Dropbox-API-Arg: &#123;\&quot;path\&quot;: \&quot;/Homework/math/Matrices.txt\&quot;,\&quot;mode\&quot;: \&quot;add\&quot;,\&quot;autorename\&quot;: true,\&quot;mute\&quot;: false,\&quot;strict_conflict\&quot;: false&#125;&quot; \</span><br><span class="line">    --header &quot;Content-Type: application/octet-stream&quot; \</span><br><span class="line">    --data-binary @local_file.txt</span><br></pre></td></tr></table></figure>
+
+<p>其中需要修改的位置有三個</p>
+<p>首先是在 <code>Bearer</code> 後面要換成自己 Dropbox 帳號的 token</p>
+<p>Dropbox 也很貼心的把 <get access token> 弄成一個按鈕</p>
+<p>登入之後點下去就會顯示自己的 token 了</p>
+<p>第二個是設定 Dropbox 上要儲存的路徑</p>
+<p>也就是範例中 <code>/Homework/math/Matrices.txt</code> 的部分</p>
+<p>最後是要上傳的本地檔案位置</p>
+<p>也就是最後一行的 <code>local_file.txt</code> </p>
+<br/>
+
+<h3 id="取得分享鏈結位置"><a href="#取得分享鏈結位置" class="headerlink" title="取得分享鏈結位置"></a>取得分享鏈結位置</h3><p>一樣找到文件裡面 <code>create_shared_link_with_settings</code> 的說明</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings \</span><br><span class="line">    --header &quot;Authorization: Bearer &lt;get access token&gt;&quot; \</span><br><span class="line">    --header &quot;Content-Type: application/json&quot; \</span><br><span class="line">    --data &quot;&#123;\&quot;path\&quot;: \&quot;/Homework/math/Matrices.txt\&quot;&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>這隻 API 也是設定好 token</p>
+<p>然後指定 Dropbox 上要分享的文件位置</p>
+<p>對這次要達成的目標而言，重點在這隻 API 的 response</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;.tag&quot;: &quot;file&quot;,</span><br><span class="line">    &quot;url&quot;: &quot;https://www.dropbox.com/s/2sn712vy1ovegw8/Prime_Numbers.txt?dl=0&quot;,</span><br><span class="line">    &quot;name&quot;: &quot;Prime_Numbers.txt&quot;,</span><br><span class="line">    &quot;link_permissions&quot;: &#123;</span><br><span class="line">        &quot;can_revoke&quot;: false,</span><br><span class="line">        &quot;resolved_visibility&quot;: &#123;</span><br><span class="line">            &quot;.tag&quot;: &quot;public&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;revoke_failure_reason&quot;: &#123;</span><br><span class="line">            &quot;.tag&quot;: &quot;owner_only&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;client_modified&quot;: &quot;2015-05-12T15:50:38Z&quot;,</span><br><span class="line">    &quot;server_modified&quot;: &quot;2015-05-12T15:50:38Z&quot;,</span><br><span class="line">    &quot;rev&quot;: &quot;a1c10ce0dd78&quot;,</span><br><span class="line">    &quot;size&quot;: 7212,</span><br><span class="line">    &quot;id&quot;: &quot;id:a4ayc_80_OEAAAAAAAAAXw&quot;,</span><br><span class="line">    &quot;path_lower&quot;: &quot;/homework/math/prime_numbers.txt&quot;,</span><br><span class="line">    &quot;team_member_info&quot;: &#123;</span><br><span class="line">        &quot;team_info&quot;: &#123;</span><br><span class="line">            &quot;id&quot;: &quot;dbtid:AAFdgehTzw7WlXhZJsbGCLePe8RvQGYDr-I&quot;,</span><br><span class="line">            &quot;name&quot;: &quot;Acme, Inc.&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;display_name&quot;: &quot;Roger Rabbit&quot;,</span><br><span class="line">        &quot;member_id&quot;: &quot;dbmid:abcd1234&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>會回傳一個 json 格式的資料</p>
+<p>其中 <code>url</code> 這個欄位所帶回來的值就是我們這次的目標了</p>
+<p>現在有了這兩隻 API ，就可以達成上傳檔案並拿到分享鏈結的目標了</p>
+<br/>
+
+<h3 id="manifest-plist"><a href="#manifest-plist" class="headerlink" title="manifest.plist"></a>manifest.plist</h3><p>接下來要處理的就是讓 app 能正確被手機下載所需要的 manifest.plist 了</p>
+<p>最簡單的取得方式就是直接使用 Xcode 打包一次 development 的版本發佈</p>
+<p>裡面就會有產生 manifest.plist 的選項了</p>
+<p>這裡給出來的是使用 Development 打包發佈 ipa 的版本(因為是給自家 QA 測試)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span><br><span class="line">&lt;plist version=&quot;1.0&quot;&gt;</span><br><span class="line">&lt;dict&gt;</span><br><span class="line">	&lt;key&gt;items&lt;/key&gt;</span><br><span class="line">	&lt;array&gt;</span><br><span class="line">		&lt;dict&gt;</span><br><span class="line">			&lt;key&gt;assets&lt;/key&gt;</span><br><span class="line">			&lt;array&gt;</span><br><span class="line">				&lt;dict&gt;</span><br><span class="line">					&lt;key&gt;kind&lt;/key&gt;</span><br><span class="line">					&lt;string&gt;software-package&lt;/string&gt;</span><br><span class="line">					&lt;key&gt;url&lt;/key&gt;</span><br><span class="line">					&lt;string&gt;https://dl.dropboxusercontent.com/s/dropbox_shared_link/demo.ipa&lt;/string&gt;</span><br><span class="line">				&lt;/dict&gt;</span><br><span class="line">			&lt;/array&gt;</span><br><span class="line">			&lt;key&gt;metadata&lt;/key&gt;</span><br><span class="line">			&lt;dict&gt;</span><br><span class="line">				&lt;key&gt;bundle-identifier&lt;/key&gt;</span><br><span class="line">				&lt;string&gt;&#123;your_bundle_identifier&#125;&lt;/string&gt;</span><br><span class="line">				&lt;key&gt;bundle-version&lt;/key&gt;</span><br><span class="line">				&lt;string&gt;now_build_number&lt;/string&gt;</span><br><span class="line">				&lt;key&gt;kind&lt;/key&gt;</span><br><span class="line">				&lt;string&gt;software&lt;/string&gt;</span><br><span class="line">				&lt;key&gt;platform-identifier&lt;/key&gt;</span><br><span class="line">				&lt;string&gt;com.apple.platform.iphoneos&lt;/string&gt;</span><br><span class="line">				&lt;key&gt;title&lt;/key&gt;</span><br><span class="line">				&lt;string&gt;demo&lt;/string&gt;</span><br><span class="line">			&lt;/dict&gt;</span><br><span class="line">		&lt;/dict&gt;</span><br><span class="line">	&lt;/array&gt;</span><br><span class="line">&lt;/dict&gt;</span><br><span class="line">&lt;/plist&gt;</span><br></pre></td></tr></table></figure>
+
+<p>這裡面需要修改兩個地方</p>
+<p>一個是用自己 app 的 <code>bundle identifier</code></p>
+<p>直接取代掉 <code>&#123;your_bundle_identifier&#125;</code> </p>
+<p>另外是將 <code>url</code>, <code>title</code> 兩個 key 底下的 demo 換成要發佈的 ipa名稱 與 app 名稱即可</p>
+<br/>
+
+<p>manifest.plist 中還有兩個地方是等等我們在寫 script </p>
+<p>的時候希望能自動幫我們取代的東西</p>
+<p>一個是 <code>dropbox_shared_link</code> 另一個就是 <code>bundle-version</code></p>
+<p>這樣以後執行時帶入取得的下載位置連結跟版本號就輕鬆多了</p>
+<p>這裡為何只需要修改 <code>dropbox_shared_link</code> 我們文章最後一起討論</p>
+<br/>
+
+<h3 id="目標細節-amp-檔案配置"><a href="#目標細節-amp-檔案配置" class="headerlink" title="目標細節 &amp; 檔案配置"></a>目標細節 &amp; 檔案配置</h3><p>作為一個減少人工作業的配置，當然需要多將一些繁雜的工作考慮進去</p>
+<br/>
+
+<h5 id="ipa-path"><a href="#ipa-path" class="headerlink" title="ipa path"></a>ipa path</h5><p>首先是 ipa 檔案打包好之後存放的位置跟上傳之後在 Dropbox 上的位置</p>
+<p>希望可以簡單表達出這是哪一個版本，哪一個環境</p>
+<p>因此在建置機器的本地端會將檔案輸出到 </p>
+<p><code>/&#123;project_name&#125;/&#123;build_version&#125;(&#123;build_number&#125;)&#123;env&#125;</code></p>
+<p>的目錄底下</p>
+<p>並且上傳到 Dropbox 上相同的資料夾位置</p>
+<p>因此假設我的專案名稱叫做 demo</p>
+<p>這版本是 staging 環境的 1.0.1(345) 版本</p>
+<p>打包好我就把它 export 到 <code>/demo/1.0.1(345)staging</code> 這個資料夾底下</p>
+<p>這樣經過一段時間回來也能方便找到對的版本</p>
+<br/>
+
+<h5 id="manifest-plist-重複利用"><a href="#manifest-plist-重複利用" class="headerlink" title="manifest.plist 重複利用"></a>manifest.plist 重複利用</h5><p>作為大多內容不需要改動的 manifest.plist 檔案</p>
+<p>上面範例檔案的參數就是希望能不需要每次都手動重新配制 manifest.plist</p>
+<p>因此確認寫好的 manifest.plist 正確放置在建置機器下的路徑位置，並記錄下來</p>
+<p>這樣等一下寫 script 的時候我們就知道該指定檔案的位置讓系統找到它了</p>
+<p>如此一來，只要執行完再利用改動將檔案回復為使用前的狀態</p>
+<p>就可以重複利用這個 manifest.plist 的範例檔案了</p>
+<p>設定好一次就可以不理他囉</p>
+<br/>
+
+<h3 id="BASH-SCRIPT"><a href="#BASH-SCRIPT" class="headerlink" title="BASH SCRIPT"></a>BASH SCRIPT</h3><p>準備工作都完成了，開始來寫關鍵的執行腳本吧</p>
+<p>重新回顧一下前面的步驟，並搭配我們的工具</p>
+<p>可以重新整理出這個 script 實際執行需要的配置與動作如下</p>
+<ol>
+<li><p>接收三個外部參數 {version_number}, {build_number}, {env}</p>
+</li>
+<li><p>上傳 ipa 檔案到 Dropbox</p>
+</li>
+<li><p>取得 ipa Dropbox 分享鏈結</p>
+</li>
+<li><p>處理回傳資訊並拿出需要的鏈結位置資訊</p>
+</li>
+<li><p>將位置資訊以及 {version_number} 寫入 manifest.plist</p>
+</li>
+<li><p>上傳 manifest.plist</p>
+</li>
+<li><p>將本地 manifest.plist 回復為原本的設定</p>
+</li>
+<li><p>取得 manifest.plist Dropbox 分享鏈結</p>
+</li>
+<li><p>處理回傳資訊取得可以用來下載 app 的 url</p>
+</li>
+</ol>
+<p>如下範例檔案</p>
+<p>upload_dropbox_share_tamplate.sh</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"># Step1 Get parameter</span><br><span class="line">echo $1</span><br><span class="line">echo &quot;version number&quot;</span><br><span class="line">echo $2</span><br><span class="line">echo &quot;build number&quot;</span><br><span class="line">echo $3</span><br><span class="line">echo &quot;env&quot;</span><br><span class="line"># prod/preprod/staging/dev</span><br><span class="line"></span><br><span class="line">echo &quot;&lt;your_file_location&gt;/demo$1($2)$3&quot;</span><br><span class="line"></span><br><span class="line"># Step2 upload ipa to dropbox</span><br><span class="line">curl -X POST https://content.dropboxapi.com/2/files/upload \</span><br><span class="line">--header &quot;Authorization: Bearer &lt;access_token&gt;&quot; \</span><br><span class="line">--header &quot;Dropbox-API-Arg: &#123;\&quot;path\&quot;: \&quot;/demo/$1($2)$3/demo.ipa\&quot;,\&quot;mode\&quot;: \&quot;add\&quot;,\&quot;autorename\&quot;: true,\&quot;mute\&quot;: false,\&quot;strict_conflict\&quot;: false&#125;&quot; \</span><br><span class="line">--header &quot;Content-Type: application/octet-stream&quot; \</span><br><span class="line">--data-binary &quot;@&lt;your_file_location&gt;/demo$1($2)$3/demo.ipa&quot;</span><br><span class="line"></span><br><span class="line">#---------</span><br><span class="line"></span><br><span class="line"># Step3 Create ipa file shared_link</span><br><span class="line">response=$(curl -X POST https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings \</span><br><span class="line">--header &quot;Authorization: Bearer &lt;access_token&gt;&quot; \</span><br><span class="line">--header &quot;Content-Type: application/json&quot; \</span><br><span class="line">--data &quot;&#123;\&quot;path\&quot;: \&quot;/demo/$1($2)$3/demo.ipa\&quot;&#125;&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># Step4 Handle response</span><br><span class="line"># replce response string ex: &quot;https://www.dropbox.com/s/tcw9p8uxrlwzw09/xxx.ipa?dl=0.....&quot;</span><br><span class="line">echo $response</span><br><span class="line"># cut dl=0</span><br><span class="line">left=$&#123;response%?dl=0*&#125;</span><br><span class="line"># cut /xxx.ipa</span><br><span class="line">ipaName=$&#123;left%/*&#125;</span><br><span class="line"># cut https://www.dropbox.com/s/</span><br><span class="line">link=$&#123;ipaName#*s/&#125;</span><br><span class="line">echo $link</span><br><span class="line"></span><br><span class="line"># Step5 Set manifest file</span><br><span class="line"># dropbox_shared_link write into manifiest.plist</span><br><span class="line">sed -i &#x27;&#x27; &quot;s/dropbox_shared_link/$&#123;link&#125;/g&quot; &lt;your_file_location&gt;/manifest.plist</span><br><span class="line">sed -i &#x27;&#x27; &quot;s/now_build_number/$1/g&quot; &lt;your_file_location&gt;/manifest.plist</span><br><span class="line"></span><br><span class="line"># Step6 Upload manifest.plist</span><br><span class="line">curl -X POST https://content.dropboxapi.com/2/files/upload \</span><br><span class="line">--header &quot;Authorization: Bearer &lt;access_token&gt;&quot; \</span><br><span class="line">--header &quot;Dropbox-API-Arg: &#123;\&quot;path\&quot;: \&quot;/demo/$1($2)$3/manifest.plist\&quot;,\&quot;mode\&quot;: \&quot;add\&quot;,\&quot;autorename\&quot;: true,\&quot;mute\&quot;: false,\&quot;strict_conflict\&quot;: false&#125;&quot; \</span><br><span class="line">--header &quot;Content-Type: application/octet-stream&quot; \</span><br><span class="line">--data-binary &quot;@&lt;your_file_location&gt;/manifest.plist&quot;</span><br><span class="line"></span><br><span class="line"># Step7 Reset dropbox_shared_link in manifiest.plist</span><br><span class="line">sed -i &#x27;&#x27; &quot;s/$&#123;link&#125;/dropbox_shared_link/g&quot; &lt;your_file_location&gt;/manifest.plist</span><br><span class="line">sed -i &#x27;&#x27; &quot;s/$1/now_build_number/g&quot; &lt;your_file_location&gt;/manifest.plist</span><br><span class="line"></span><br><span class="line"># Step8 share_menifest.plist</span><br><span class="line">response_manifest=$(curl -X POST https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings \</span><br><span class="line">--header &quot;Authorization: Bearer &lt;access_token&gt;&quot; \</span><br><span class="line">--header &quot;Content-Type: application/json&quot; \</span><br><span class="line">--data &quot;&#123;\&quot;path\&quot;: \&quot;/demo/$1($2)$3/manifest.plist\&quot;&#125;&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># Step9 Handle response</span><br><span class="line"># replce response string ex: &quot;https://www.dropbox.com/s/tcw9p8uxrlwzw09/manifest.plist?dl=0&quot;</span><br><span class="line">echo $response_manifest</span><br><span class="line"># cut dl=0</span><br><span class="line">left_m=$&#123;response_manifest%?dl=0*&#125;</span><br><span class="line"># cut /manifest.plist</span><br><span class="line">ipaName_m=$&#123;left_m%/*&#125;</span><br><span class="line"># cut https://www.dropbox.com/s/</span><br><span class="line">link_m=$&#123;ipaName_m#*s/&#125;</span><br><span class="line">echo $link_m</span><br></pre></td></tr></table></figure>
+
+<p>使用上非常簡單，依照上方範例</p>
+<p>修改好裡面檔案路徑位置之後</p>
+<p>在 terminal 下移動到存放這個 upload_dropbox_share_tamplate.sh 的位置</p>
+<p>執行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh upload_dropbox_share_tamplate.sh &#123;version_number&#125; &#123;build_number&#125; &#123;<span class="built_in">env</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>執行完會回覆一組字串</p>
+<p>將這組字串組好 Dropbox 下載鏈結並放入網站中</p>
+<p>點擊連結就可以下載 app 拉</p>
+<br/>
+
+<h3 id="關於-OTA-原理與-Dropbox-下載鏈結"><a href="#關於-OTA-原理與-Dropbox-下載鏈結" class="headerlink" title="關於 OTA 原理與 Dropbox 下載鏈結"></a>關於 OTA 原理與 Dropbox 下載鏈結</h3><p>實作完了我們就來看看前面沒有提到的部分吧</p>
+<p>簡單來說就我理解到的 OTA(Over-the-Air) 安裝</p>
+<p>是瀏覽器利用 itms-service 協議讓使用者的手機取得 manifest.plist 裡的資訊</p>
+<p>app 名稱，版本，下載位置等等，並觸發下載流程</p>
+<p><a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/iPhoneOTAConfiguration/OTASecurity/OTASecurity.html">Over-the-Air Documentation</a></p>
+<p>因此在 manifest.plist 中需要明確指定 ipa 的下載位置</p>
+<p>而網站裡也需要有 manifest.plist 的下載位置讓瀏覽器去進行下載動作</p>
+<p>為此我們必須將上傳至 Dropbox 並且取得可以用來<strong>直接</strong>下載的鏈結</p>
+<p>依照 Dropbox 的說明，想要直接下載時</p>
+<p>可以使用 <code>dl.dropboxusrecontent</code> 的路徑來取得檔案</p>
+<p>並且可以發現下載鏈結的格式都可以統一成 </p>
+<p><code>https://dl.dropboxusercontent.com/s/&#123;dropbox_shared_link&#125;/filename</code></p>
+<p>而取得分享鏈結的 api 回傳的 url 欄位格式會是 </p>
+<p><code>https://www.dropbox.com/s/&#123;dropbox_shared_link&#125;/filename</code></p>
+<p>所以在處理下載鏈結時，只需要取出中間 {dropbox_shared_link} 部分的字串就可以了</p>
+<p>BASH 檔案裡的 Step 3, Step 8 我就直接針對 response 的字串結果去處理</p>
+<p>直接把前後的字通通摳掉，就可以得到我需要的 {dropbox_share_link} 字串了</p>
+<p>再將這字串做需要的處理即可，像是 Step 4 塞入 manifest.plist</p>
+<br/>
+
+<p>範例檔案最後只有將 manifest.plist 的下載需要的 {dropbox_share_link}</p>
+<p>這一串字印出來而已</p>
+<p>其實還可以做後續的處理</p>
+<p>像我是把它組成正確的下載鏈結，然後傳到 slack 跟更新到網站上</p>
+<p>這樣搭配 CI + fastlane 就能完成 push code 完成就自動打包好送到 QA 手上拉</p>
+<p>又朝著薪水小倫的目標更近一步了呢 0.0b</p>
+<img src="https://dl.dropboxusercontent.com/s/d9jnudaenk9sav1/%E7%9B%B8%E7%89%87%202020-2-19%20%E4%B8%8B%E5%8D%886%2018%2054.jpg">
+
+<br/>
+
+<p>有空再來寫寫打包的故事 emmm …</p>
+<img src="https://dl.dropboxusercontent.com/s/02nokkwa0l06qji/%E7%9B%B8%E7%89%87%202020-2-19%20%E4%B8%8B%E5%8D%884%2028%2024.jpg">
+
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2020/02/25/20200225/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2020/02/13/20201213/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2020-02-18 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/OTA/">OTA<span>1</span></a></li> <li><a href="/donaldwu.github.com/tags/BASH/">BASH<span>2</span></a></li> <li><a href="/donaldwu.github.com/tags/Dropbox/">Dropbox<span>1</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

@@ -1,0 +1,327 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>測試好幫手-Fabric | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="在開發軟體的過程中，測試絕對是相當重要的一環
+iOS開發者絕對聽過的TestFlight就是apple提供不錯的工具
+當然也有不少其他工具可以滿足各式各樣測試的需求
+本篇就來介紹最近開始使用並覺得相當不錯的Fabric">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="測試好幫手-Fabric"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> 測試好幫手-Fabric</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>在開發軟體的過程中，測試絕對是相當重要的一環</p>
+<p>iOS開發者絕對聽過的TestFlight就是apple提供不錯的工具</p>
+<p>當然也有不少其他工具可以滿足各式各樣測試的需求</p>
+<p>本篇就來介紹最近開始使用並覺得相當不錯的Fabric</p>
+<span id="more"></span>
+
+<p>一樣先從Fabric可以幫我們做到什麼功能開始</p>
+<p>首先Fabric可以讓你發佈你的app並發送郵件給你指定的測試人員下載</p>
+<p>並且配合Crashlytics可以在發布的app發生Crash時，發送email給你告知你有問題發生了</p>
+<p>那麼接下來我們就來一步一步設定Fabric吧</p>
+<p>第一步先到apple的開發者網站設定一下</p>
+<p>這裡的範例因為是全新的app所以我新建了一個appID以及Provisioning Profiles</p>
+<p>如果已經有了就不需要再做了，視情況調整即可</p>
+<p>1.建立appID</p>
+
+
+<p>2.建立Provisioning Profiles，這裡我只拿來測試因此選擇Development</p>
+
+
+<ol start="3">
+<li>選擇appID，就選剛剛建立好(要測)的那組</li>
+</ol>
+
+
+<p>最後就照著系統提示選擇你的證書、註冊的裝置(之後可以另外加)跟幫這個Provisioning Profile取個名吧</p>
+<p><a target="_blank" rel="noopener" href="https://get.fabric.io/">接下來去官網下載Fabric的mac app並順便申請一個帳號吧</a></p>
+<p><a target="_blank" rel="noopener" href="https://fabric.io/kits/ios/crashlytics/install">然後跟著官方教學進行設定</a></p>
+<p>登入後教學頁面上的api key就會幫你設定成你的帳號要用的摟，很方便ＸＤ</p>
+<p>接下來就進Fabric的app來看看吧</p>
+<p>登入之後選擇專案</p>
+
+
+<p>選擇第一項Crashlytics install</p>
+
+
+<p>因為已經經由cocoapods安裝完了，因此點擊左邊的icon</p>
+<p>這兩步都已經先完成了就Next按下去吧</p>
+
+
+
+<p>再來打開專案，按下command + B編譯</p>
+
+
+<p>完成後按下command + R把專案跑起來一次，這時Fabric的app就會有你的專案可以選擇了</p>
+
+
+<p>到這邊設定都完成了，之後完成一個版本想要傳送給測試人員要怎麼做呢？</p>
+<p>其實只要Arciive你的專案</p>
+<img src="/donaldwu.github.com/2017/11/26/%E6%B8%AC%E8%A9%A6%E5%A5%BD%E5%B9%AB%E6%89%8B-Fabric/Archive.gif" class="">
+
+<p>app自己就會跳出可以上傳的提醒</p>
+
+
+<p>接下來可以輸入要傳送給哪些測試人員的email</p>
+
+
+<p>還可以寫好給測試人員的訊息</p>
+<img src="/donaldwu.github.com/2017/11/26/%E6%B8%AC%E8%A9%A6%E5%A5%BD%E5%B9%AB%E6%89%8B-Fabric/12.png" class="">
+
+<p>送出之後就開始上傳拉，上傳完成測試人員就會接收到郵件請測試人員下載app囉</p>
+<img src="/donaldwu.github.com/2017/11/26/%E6%B8%AC%E8%A9%A6%E5%A5%BD%E5%B9%AB%E6%89%8B-Fabric/13.png" class="">
+
+<p>p.s. 如果archive玩沒有提示(或是提示的版本不是最新版)</p>
+<p>可以打開Fabric app裡面的archive的欄位按下發布就可以瞜</p>
+<p>最後，如果是第一次加入的測試人員，系統email會提示測試人員回傳他們測試手機的UUID</p>
+<p>開發人員只要去apple開發者網站加入那隻手機就ＯＫ了(下圖中Device那邊)</p>
+<img src="/donaldwu.github.com/2017/11/26/%E6%B8%AC%E8%A9%A6%E5%A5%BD%E5%B9%AB%E6%89%8B-Fabric/14.png" class="">
+
+<p>之後只要有新的Archive就可以用Fabric上傳並且發佈拉～～～</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2018/01/03/無聊實驗室：vim基本操作/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2017/11/06/iOS-Jenkins設定/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2017-11-26 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/Fabric/">Fabric<span>1</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

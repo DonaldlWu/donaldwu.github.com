@@ -1,0 +1,306 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>Swift隨手紀錄Day10-PickerView Part2 | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="防止偷懶日記Day10
+今天來把昨天做的UIPickerView繼續完成
+首先先來確認目標">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Swift隨手紀錄Day10-PickerView Part2"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> Swift隨手紀錄Day10-PickerView Part2</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>防止偷懶日記Day10</p>
+<p>今天來把昨天做的UIPickerView繼續完成</p>
+<p>首先先來確認目標</p>
+<span id="more"></span>
+
+<p>在紀錄時需要的資料希望可以像撥洋蔥一樣一層一層的作選擇</p>
+<p>第一層先選擇是安打(H)、保送(BB)、失誤(E)、三振(K)、犧牲飛球(SF)</p>
+<p>第二層再更進一步選擇是一安、二安、三安還是全壘打等等</p>
+<p>然後能夠從UIPickerView把資料回存在回到collectionView時顯示</p>
+<p>來看看現在的UIPickerView長這樣</p>
+<img src="/donaldwu.github.com/2017/07/01/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day10-PickerView-Part2/PickerView.png" class="">
+
+<p>可以看到需要兩行的選項</p>
+<p>昨天定義了第一行的資訊，現在就來繼續定義第二行</p>
+<p>回到RecordPickerController.swift</p>
+<p>新增一個陣列</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> recordDetialArray <span class="operator">=</span> [[<span class="string">&quot;H&quot;</span>, <span class="string">&quot;2B&quot;</span>, <span class="string">&quot;3B&quot;</span>, <span class="string">&quot;HR&quot;</span>], [<span class="string">&quot;BB&quot;</span>, <span class="string">&quot;HBP&quot;</span>], [<span class="string">&quot;E1&quot;</span>, <span class="string">&quot;E2&quot;</span>, <span class="string">&quot;E3&quot;</span>, <span class="string">&quot;E4&quot;</span>, <span class="string">&quot;E5&quot;</span>, <span class="string">&quot;E6&quot;</span>, <span class="string">&quot;E7&quot;</span>, <span class="string">&quot;E8&quot;</span>, <span class="string">&quot;E9&quot;</span>], [<span class="string">&quot;K&quot;</span>, <span class="string">&quot;K&quot;</span>], [<span class="string">&quot;SF&quot;</span>, <span class="string">&quot;SH&quot;</span>]]</span><br></pre></td></tr></table></figure>
+
+<p>接下來修改一下<code>numberOfComponents</code>、<code>numberOfRowsInComponent</code>、<code>titleForRow</code>、<code>didSelectRow</code>這幾個方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">numberOfComponents</span>(<span class="params">in</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>) -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">pickerView</span>(<span class="keyword">_</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>, <span class="params">numberOfRowsInComponent</span> <span class="params">component</span>: <span class="type">Int</span>) -&gt; <span class="type">Int</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">0</span> &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> recordtypeArray.count</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line">		</span><br><span class="line">    <span class="keyword">return</span> recordDetialArray[recordPickerView.selectedRow(inComponent: <span class="number">0</span>)].count</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">pickerView</span>(<span class="keyword">_</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>, <span class="params">titleForRow</span> <span class="params">row</span>: <span class="type">Int</span>, <span class="params">forComponent</span> <span class="params">component</span>: <span class="type">Int</span>) -&gt; <span class="type">String</span>? &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">0</span> &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> recordtypeArray[row]</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> recordDetialArray[recordPickerView.selectedRow(inComponent: <span class="number">0</span>)][row]</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">pickerView</span>(<span class="keyword">_</span> <span class="params">pickerView</span>: <span class="type">UIPickerView</span>, <span class="params">didSelectRow</span> <span class="params">row</span>: <span class="type">Int</span>, <span class="params">inComponent</span> <span class="params">component</span>: <span class="type">Int</span>) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">0</span> &#123;</span><br><span class="line">    </span><br><span class="line">        recordPickerView.reloadComponent(<span class="number">1</span>)</span><br><span class="line">        tempRecord <span class="operator">=</span> recordDetialArray[row][<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> component <span class="operator">==</span> <span class="number">1</span> &#123;</span><br><span class="line">        </span><br><span class="line">        tempRecord <span class="operator">=</span> recordDetialArray[recordPickerView.selectedRow(inComponent: <span class="number">0</span>)][row]</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我們需要兩行，首先修改<code>numberOfComponents</code>回傳2</p>
+<p>再來修改<code>numberOfRowsInComponent</code>，如果是第零行就回傳<code>recordtypeArray</code>的陣列數量</p>
+<p>如果是第一行就回傳<code>recordDetialArray</code>中對應第零行被選到的對應陣列的數量</p>
+<p>接下來是內容的修改，再呈現第零行時回傳<code>recordtypeArray</code>內與列數相對的字串</p>
+<p>第一行則呈現<code>recordDetialArray</code>中對應第零行被選到的對應陣列的字串</p>
+<p>然後定義當某一行某一列被選到的時候要做的動作</p>
+<p>但在做動作之前，先定義一些輔助用的變數</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> tempRecord: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;H&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>因為進入PickerView時預設是選擇第零列</p>
+<p>因此如果使用者都不做動作回傳的應該是安打(H)</p>
+<p>所以我們預設值給H</p>
+<p>輔助用的變數設定完，就來設定被選到時的動作</p>
+<p>如果使用者選則了第零行的某一列，應該要去重新設定第一行對應的內容</p>
+<p>並將要回傳的資料設定成第零行被選擇那一列的字串</p>
+<p>而當使用者選擇了第一行，就回傳<code>recordDetialArray</code></p>
+<p>中第零列所選擇的列數所對應到的字串陣列中與現在第一行選擇列數相對應的字串</p>
+<p>最後來新增兩個按鈕在UIPickerView內</p>
+<p>讓使用者可以做新增或取消的動作</p>
+<p>並先將要執行動作的function準備好</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> addButton: <span class="type">UIButton</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> button <span class="operator">=</span> <span class="type">UIButton</span>()</span><br><span class="line">        button.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        button.backgroundColor <span class="operator">=</span> .purple</span><br><span class="line">        button.layer.cornerRadius <span class="operator">=</span> <span class="number">5</span></span><br><span class="line">        button.layer.borderColor <span class="operator">=</span> <span class="type">UIColor</span>.blue.cgColor</span><br><span class="line">        button.layer.borderWidth <span class="operator">=</span> <span class="number">2</span></span><br><span class="line">        button.setTitle(<span class="string">&quot;UPDATE&quot;</span>, for: .normal)</span><br><span class="line">        button.titleLabel<span class="operator">?</span>.font <span class="operator">=</span> <span class="type">UIFont</span>.boldSystemFont(ofSize: <span class="number">13</span>)</span><br><span class="line">        button.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(sendRecordBack), for: .touchUpInside)</span><br><span class="line">        <span class="keyword">return</span> button</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> cancelButton: <span class="type">UIButton</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> button <span class="operator">=</span> <span class="type">UIButton</span>()</span><br><span class="line">        button.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        button.backgroundColor <span class="operator">=</span> .purple</span><br><span class="line">        button.layer.cornerRadius <span class="operator">=</span> <span class="number">5</span></span><br><span class="line">        button.layer.borderColor <span class="operator">=</span> <span class="type">UIColor</span>.blue.cgColor</span><br><span class="line">        button.layer.borderWidth <span class="operator">=</span> <span class="number">2</span></span><br><span class="line">        button.setTitle(<span class="string">&quot;CANCEL&quot;</span>, for: .normal)</span><br><span class="line">        button.titleLabel<span class="operator">?</span>.font <span class="operator">=</span> <span class="type">UIFont</span>.boldSystemFont(ofSize: <span class="number">13</span>)</span><br><span class="line">        button.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(sendRecordCancel), for: .touchUpInside)</span><br><span class="line">        <span class="keyword">return</span> button</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">        <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">        view.backgroundColor <span class="operator">=</span> .green</span><br><span class="line">        </span><br><span class="line">        recordPickerView <span class="operator">=</span> <span class="type">UIPickerView</span>()</span><br><span class="line">        recordPickerView.frame <span class="operator">=</span> <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="keyword">self</span>.view.bounds.height <span class="operator">/</span> <span class="number">3</span>, width: <span class="keyword">self</span>.view.bounds.width, height: <span class="number">200</span>)</span><br><span class="line">        recordPickerView.showsSelectionIndicator <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        recordPickerView.delegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">        recordPickerView.dataSource <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">self</span>.view.addSubview(recordPickerView)</span><br><span class="line">        <span class="keyword">self</span>.view.addSubview(addButton)</span><br><span class="line">        <span class="keyword">self</span>.view.addSubview(cancelButton)</span><br><span class="line">        </span><br><span class="line">        addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: <span class="operator">-</span><span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: <span class="number">64</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        addButton.widthAnchor.constraint(equalToConstant: <span class="number">64</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        addButton.heightAnchor.constraint(equalToConstant: <span class="number">36</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: <span class="operator">-</span><span class="number">12</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        cancelButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: <span class="operator">-</span><span class="number">64</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        cancelButton.widthAnchor.constraint(equalToConstant: <span class="number">64</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        cancelButton.heightAnchor.constraint(equalToConstant: <span class="number">36</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">sendRecordBack</span>() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">sendRecordCancel</span>() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+<p>以上，接下來的明天處理</p>
+<p>今天回母校打系藍OB賽</p>
+<p>學弟們真是用心，準備不少球賽以外的活動</p>
+<p>今天的運動量應該是超過過去半年的總和</p>
+<p>第一次覺得累到快吸不到氣ＱＱ</p>
+<p>該做點運動了….</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2017/07/02/Swift隨手紀錄Day11-PickerView-Part3/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2017/06/30/Swift隨手紀錄Day9-PickerView/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2017-07-01 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/Swift/">Swift<span>32</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>關於多 ssh key 的那些坑 | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="身為一名入行不久的菜腦攻城師，各種蠢事一定是要先幹一輪才對你說是嗎？
+除了目前工作上的project使用的公司bitbucket帳號之外，身為一名奮發圖強的金肝攻城屍
+自己也有個bitbucket帳號也不為過吧，然後前幾天又看到hexo加gitpage架個網站好像也不錯，馬上再怒開一個來玩玩看
+成果">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="關於多 ssh key 的那些坑"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+	
+		<div class="page-header">
+			<h1> 關於多 ssh key 的那些坑</h1>
+		</div>
+	
+
+
+
+<div class="row page">
+	<!-- cols -->
+	
+	<div class="col-md-12">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>身為一名入行不久的菜腦攻城師，各種蠢事一定是要先幹一輪才對你說是嗎？</p>
+<p>除了目前工作上的project使用的公司bitbucket帳號之外，身為一名奮發圖強的金肝攻城屍</p>
+<p>自己也有個bitbucket帳號也不為過吧，然後前幾天又看到hexo加gitpage架個網站好像也不錯，馬上再怒開一個來玩玩看</p>
+<p>成果就是現在這廢文的所在地。</p>
+<p>但腦子不清楚的代價就是在多個 repository 間的 ssk key 混雜再一起然後他們就喜聞樂見的被…</p>
+<p>覆蓋掉了</p>
+<pre><code>覆蓋掉了
+
+    覆蓋掉了
+    
+        覆蓋掉了...
+        
+</code></pre>
+<p>最後只好乖乖把這當初做完就當沒這回事的東西再掏出來研究一下了</p>
+<p>所幸這世界上陪我踩過這坑的人不少，有你們真好ＱＱ</p>
+<p>所以就來記錄一下我解決這東西的過程</p>
+<p>希望我能寫得夠清楚，當初邊找資料邊碎碎念，這不能寫得詳細一點嗎，那裡填這格到底是要衝尛？</p>
+<p>不對啊，寫了他還是不甩我啊，說好的自動接好勒？</p>
+<p>心中只有三個字啊  ＷＴＦ？</p>
+<p>最後發現是自己腦子上面有個洞忘了填起來（￣ c￣）y▂ξ</p>
+<p>首先先介紹一下基本款，本人是在mac底下進行開發</p>
+<p>假設一開始沒有使用過任何ssh key，就可以直接創一個新的，然後照著後面的步驟慢慢的來</p>
+<p>不確定的話跟我一樣打開terminal輸入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>輸入<code>ls</code>看看裡面有沒有需要你清除的業障吧ＸＤ</p>
+<p>都空了？ 啥都沒有？ 恭喜你，讓我們開始一起雷吧？</p>
+<p>首先講一下我們的目標，假設我目前有github的帳號跟bitbucket的帳號各一個</p>
+<p>github內除了本身setting的ssh key之外還需要一個gitpage的deploy key</p>
+<p>因此總共需要產生三個ssh key，並設定一個config檔案讓這些key自己跟對應的repository接好</p>
+<p>OK，有了目標的下一步就是</p>
+<p>富堅一下，幹我好累，睡個覺先．</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

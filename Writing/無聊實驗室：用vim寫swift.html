@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>無聊實驗室：用vim寫swift | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="目前想要開發Swift項目，Xcode絕對是第一個會被拿出來的選項
+但不用Xcode能不能用來寫Swif呢？
+喂了喂估狗大神，看到了一些蠻有趣的結果
+本篇就來配置一下用vim編輯.swift文檔，並編譯出簡單的結果吧">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="無聊實驗室：用vim寫swift"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+	
+		<div class="page-header">
+			<h1> 無聊實驗室：用vim寫swift</h1>
+		</div>
+	
+
+
+
+<div class="row page">
+	<!-- cols -->
+	
+	<div class="col-md-12">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>目前想要開發Swift項目，Xcode絕對是第一個會被拿出來的選項</p>
+<p>但不用Xcode能不能用來寫Swif呢？</p>
+<p>喂了喂估狗大神，看到了一些蠻有趣的結果</p>
+<p>本篇就來配置一下用vim編輯.swift文檔，並編譯出簡單的結果吧</p>
+<span id="more"></span>
+
+<p>首先，要編譯當然還是需要Xcode裡面的編譯命令拉，這樣到底意義在哪裡拉ＸＤ （謎之音：潮啊)</p>
+<p>打開終端機，輸入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo xcode-select -switch /Applications/Xcode.app</span><br></pre></td></tr></table></figure>
+
+<p>其中的路徑請根據您的Xcode.app所在路徑做調整</p>
+<p>設置完成後輸入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun swift</span><br></pre></td></tr></table></figure>
+
+<p>這樣就可以使用xcrun幫我們編譯摟</p>
+
+
+<p>在這模式下可以輸入<code>:help</code>查看幫助，要離開則可以輸入<code>:exit</code></p>
+<p>如果只是簡單的.swift檔案想看編譯結果可以直接執行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun swift example.swift</span><br></pre></td></tr></table></figure>
+
+<p>但是這當然不是我們最終的目標，我想看到的是視窗上半部我可以開著vim編輯文件</p>
+<p>視窗下半部則是隨時顯示編譯的結果，但這樣就需要一個幫手在我儲存文件時去執行swift的編譯</p>
+<p>每次都要再打一次<code>xcrun swift </code>實在是不科學</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/guard/guard">這邊的Guard就可以幫我們解決這個問題</a></p>
+<p>用gem安裝一下，終端機輸入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gem install guard-shell</span><br></pre></td></tr></table></figure>
+
+<p>安裝完之後來試用一下吧，將終端機位置移動到想要編譯的.swift文檔目錄下</p>
+<p>執行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">guard init shell</span><br></pre></td></tr></table></figure>
+
+<p>這樣便會產生一個Guardfile文件，貼入以下內容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">guard :shell do</span><br><span class="line">  watch(/(.*).swift/) do |m|</span><br><span class="line">    puts &quot;-&quot; * 10</span><br><span class="line">    puts &quot;Start Building&quot;</span><br><span class="line">    puts &quot;-&quot; * 10</span><br><span class="line">    puts `xcrun swift #&#123;m[0]&#125;`</span><br><span class="line">    puts &quot;-&quot; * 10</span><br><span class="line">    puts &quot;Build Ended&quot;</span><br><span class="line">    puts &quot;-&quot; * 10</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>主要就是在觀測到.swift檔案編輯時印出分隔線並執行<code>xcrun swift</code></p>
+<p>要啟動就在終端機目錄下輸入<code>guard</code></p>
+<p>Guard就會開始依照Guardfile裡面的設定監看所在目錄下的變動了</p>
+<p>實際使用就看看下面的gif吧</p>
+
+
+<p>不過到這裡其實最最最麻煩的問題其實是</p>
+<p>現在沒有autocomplete要寫code太困難了啊!!!!</p>
+<p>為了解決這個問題，繼續餵狗的結果我幫我的vim裝了以下兩個插件</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Valloric/YouCompleteMe"> YouCompleteMe </a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/toyamarinyon/vim-swift"> vim-swift </a></p>
+<p>試用的結果…離實際能拿來開發還有極度遙遠的距離，慢慢研究吧ＱＱ</p>
+<p>2018第一篇廢文就到此結束，找資料跟實際安裝的過程中也有不少新的發現</p>
+<p>期許今年的自己能夠產出更多的廢文，有更多的發現．</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

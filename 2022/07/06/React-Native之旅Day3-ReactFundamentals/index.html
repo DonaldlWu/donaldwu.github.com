@@ -1,0 +1,411 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>React-Native之旅Day3-React Fundamentals | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="接下來繼續跟著文件來認識 React Fundamentals
+React-Native 是基於 React 發展的技術
+因此深入瞭解 React 如何運作也是學習 React-Native 的好方法">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="React-Native之旅Day3-React Fundamentals"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> React-Native之旅Day3-React Fundamentals</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>接下來繼續跟著文件來認識 React Fundamentals</p>
+<p>React-Native 是基於 React 發展的技術</p>
+<p>因此深入瞭解 React 如何運作也是學習 React-Native 的好方法</p>
+<span id="more"></span>
+
+<p>首先我們會來了解 React 的幾個核心觀念</p>
+<ul>
+<li><p>components</p>
+</li>
+<li><p>JSX</p>
+</li>
+<li><p>props</p>
+</li>
+<li><p>state</p>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://reactjs.org/docs/getting-started.html">React’s official documentation</a></p>
+<h2 id="First-component"><a href="#First-component" class="headerlink" title="First component"></a>First component</h2><p>接下來我們就跟著文件來寫第一個 component </p>
+<h3 id="Function-Component"><a href="#Function-Component" class="headerlink" title="Function Component"></a>Function Component</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cat</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 4</span></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Text</span>&gt;</span>Hellow, I am your cat!<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cat</span>;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>import</li>
+</ol>
+<p>要使用 Function Component 的方式定義一個 <code>Cat</code> Component</p>
+<p>首先會需要 import React 以及原生 Text Component</p>
+<ol start="2">
+<li>此 Component 從一個 fuction 開始</li>
+</ol>
+<p>我們可以將 components 當作一個藍圖，而 function 會 return 一個 React element</p>
+<p>這個 React element 即用來渲染你的畫面</p>
+<br>
+
+<p>在這裡 return 一個 Text element 表示我們會在畫面上渲染一個 Text 元件</p>
+<ol start="3">
+<li>為了讓其他地方可以引用這個 Component，這裡使用了 <code>export default</code></li>
+</ol>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.samanthaming.com/tidbits/79-module-cheatsheet/">導出元件整理</a></p>
+</blockquote>
+<ol start="4">
+<li>最後我們來看看 return 語句</li>
+</ol>
+<p><code>&lt;Text&gt;Hellow, I am your cat!&lt;/Text&gt;</code></p>
+<p>這是種簡化 React 元素的寫法，我們稱為 JSX</p>
+<br>
+
+<h3 id="Class-Component"><a href="#Class-Component" class="headerlink" title="Class Component"></a>Class Component</h3><blockquote>
+<p>Class components 寫起來稍微比 Function Component 繁複一點</p>
+</blockquote>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span>, &#123; <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Cat</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">  <span class="comment">// 3</span></span><br><span class="line">  <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 5</span></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="language-xml"><span class="tag">&lt;<span class="name">Text</span>&gt;</span>Hellow, I am your cat!<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cat</span>;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>首先我們要從 React import <code>Component</code></p>
+</li>
+<li><p>這個 Component 從一個 class extending 開始</p>
+</li>
+<li><p>Class 會有一個 <code>render()</code> 函數，裡面也是會 return 一個 React element</p>
+</li>
+<li><p>如同 Function component，這裡也需要將元件 export 出來</p>
+</li>
+<li><p>JSX</p>
+</li>
+</ol>
+<h2 id="JSX"><a href="#JSX" class="headerlink" title="JSX"></a>JSX</h2><p>JSX 語法讓我們可以在 JavaScript 內建構元件</p>
+<p><a target="_blank" rel="noopener" href="https://reactjs.org/docs/jsx-in-depth.html">A comporehensice guide to JSX</a></p>
+<p>而且 JSX 其實也是 JavaScript，我們可以在語法裡使用變數</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cat</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> name = <span class="string">&quot;Maru&quot;</span>;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Text</span>&gt;</span>Hello, I am &#123;name&#125;!<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cat</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如上範例，我們可以用括號來引入變數</p>
+<p>而括號內也可以使用 JavaScript 表達式</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getFullName</span> = (<span class="params">firstName, secondName, thirdName</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> firstName + <span class="string">&quot; &quot;</span> + secondName + <span class="string">&quot; &quot;</span> + thirdName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cat</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      Hello, I am &#123;getFullName(&quot;Rum&quot;, &quot;Tum&quot;, &quot;Tugger&quot;)&#125;!</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cat</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>JSX 語法需要引入 <code>react</code></p>
+</blockquote>
+<h2 id="Custom-Component"><a href="#Custom-Component" class="headerlink" title="Custom Component"></a>Custom Component</h2><p>我們也可以將原生組件組合再一起做出我們的客製化元件</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span>, <span class="title class_">TextInput</span>, <span class="title class_">View</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cat</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Text</span>&gt;</span>Hello, I am...<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">TextInput</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">style</span>=<span class="string">&#123;&#123;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">height:</span> <span class="attr">40</span>,</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">borderColor:</span> &#x27;<span class="attr">gray</span>&#x27;,</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">borderWidth:</span> <span class="attr">1</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        &#125;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">defaultValue</span>=<span class="string">&quot;Name me!&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">      /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cat</span>;</span><br></pre></td></tr></table></figure>
+
+<p>也可以將做好的元件包入其他元件</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span>, <span class="title class_">View</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cat</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Text</span>&gt;</span>I am also a cat!<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cafe</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Text</span>&gt;</span>Welcome!<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cafe</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果有個元件包含這其他元件，則此元件被稱為父元件</p>
+<p>被包含的則稱為子元件</p>
+<p>在這裡每次呼叫 <Cat> 渲染都是不同元件</p>
+<p>意味者我們可以使用不同的 props 來客製化他們</p>
+<h2 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h2><p>就像給貓取名字，我們可以給元件定義 props</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span>, <span class="title class_">View</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cat</span> = (<span class="params">props</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Text</span>&gt;</span>Hello, I am &#123;props.name&#125;!<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cafe</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> <span class="attr">name</span>=<span class="string">&quot;Maru&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> <span class="attr">name</span>=<span class="string">&quot;Jellylorum&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> <span class="attr">name</span>=<span class="string">&quot;Spot&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cafe</span>;</span><br></pre></td></tr></table></figure>
+
+<p>大多數的 React 核心元件都可以通過 props 來完成客製化</p>
+<p>例如 Image 可以從訂製圖片來源</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Text</span>, <span class="title class_">View</span>, <span class="title class_">Image</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">CatApp</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Image</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">source</span>=<span class="string">&#123;&#123;uri:</span> &quot;<span class="attr">https:</span>//<span class="attr">reactnative.dev</span>/<span class="attr">docs</span>/<span class="attr">assets</span>/<span class="attr">p_cat1.png</span>&quot;&#125;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">style</span>=<span class="string">&#123;&#123;width:</span> <span class="attr">200</span>, <span class="attr">height:</span> <span class="attr">200</span>&#125;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">      /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Text</span>&gt;</span>Hello, I am your cat!<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">CatApp</span>;</span><br></pre></td></tr></table></figure>
+
+<p>核心元件通常有多種不同的 props</p>
+<p>通常由 property-value pair 的方式設計</p>
+<blockquote>
+<p>雙括號用來在 JSX 中傳遞 JS Object</p>
+</blockquote>
+<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><p>如果 props 理解成參數，那 State 就是使用紀錄了</p>
+<p>通常用來處理用戶交互的變化</p>
+<p>也就是 props 用來進行初次的元件畫面渲染</p>
+<p>然後利用 state 紀錄可能隨時間變化的資料</p>
+<h3 id="Function-Component-1"><a href="#Function-Component-1" class="headerlink" title="Function Component"></a>Function Component</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span>, &#123; useState &#125; <span class="keyword">from</span> <span class="string">&quot;react&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Button</span>, <span class="title class_">Text</span>, <span class="title class_">View</span> &#125; <span class="keyword">from</span> <span class="string">&quot;react-native&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cat</span> = (<span class="params">props</span>) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 2</span></span><br><span class="line">  <span class="keyword">const</span> [isHungry, setIsHungry] = <span class="title function_">useState</span>(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        I am &#123;props.name&#125;, and I am &#123;isHungry ? &quot;hungry&quot; : &quot;full&quot;&#125;!</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      // 3</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Button</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">onPress</span>=<span class="string">&#123;()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">          setIsHungry(false);</span></span><br><span class="line"><span class="language-xml">        &#125;&#125;</span></span><br><span class="line"><span class="language-xml">        // 4</span></span><br><span class="line"><span class="language-xml">        disabled=&#123;!isHungry&#125;</span></span><br><span class="line"><span class="language-xml">        title=&#123;isHungry ? &quot;Pour me some milk, please!&quot; : &quot;Thank you!&quot;&#125;</span></span><br><span class="line"><span class="language-xml">      /&gt;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Cafe</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> <span class="attr">name</span>=<span class="string">&quot;Munkustrap&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Cat</span> <span class="attr">name</span>=<span class="string">&quot;Spot&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Cafe</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以利用 Hook 為 component 新增 state</p>
+<p><a target="_blank" rel="noopener" href="https://reactjs.org/docs/hooks-state.html">useState 相關文件</a></p>
+<p>Hook 是種 function 讓我們可以連結至 React 的功能中</p>
+<p>例如 <code>useState</code> 就是個可以加入 component 的 Hook</p>
+<p><a target="_blank" rel="noopener" href="https://reactjs.org/docs/hooks-intro.html">各種 Hooks in React</a></p>
+<ol>
+<li><p>首先還是從 react 中 import useState</p>
+</li>
+<li><p>然後我們就可以利用在 Function 中調用 useState 來幫組建創建變數</p>
+</li>
+</ol>
+<blockquote>
+<p>可以用 useState 紀錄 strings, numbers, Booleans, arrays, objects.</p>
+</blockquote>
+<p>在這邊創建了一個狀態變數 <code>isHungry</code> 並給一個初始值 <code>true</code></p>
+<p>並創建一個用於改變狀態變量的值 <code>setIsHugry</code></p>
+<blockquote>
+<p>[<getter>, <setter>] &#x3D; useState(<initalValue>)</p>
+</blockquote>
+<ol start="3">
+<li>接下來設定了一個 Button 並帶了一個 <code>onPress</code> 的初始值</li>
+</ol>
+<p>當 <code>onPress</code> 被觸發，就會呼叫到 <code>setIsHungry(false)</code> 改變到 <code>isHungry</code> 的值改變為 false</p>
+<ol start="4">
+<li>而當 <code>isHungry</code> 為 false，Button 的 <code>disabled</code> prop 就會變為 true 並改變 title</li>
+</ol>
+<blockquote>
+<p><code>isHungry</code> 是使用了 const 關鍵字依然看起來可以被修改的原因是當我們調用 <code>setIsHungry</code> 時，所在的 component 將會重新渲染(整個 Cat 會從頭執行，此時 <code>useState</code> 會返回新值)</p>
+</blockquote>
+<ol start="5">
+<li>將不同 props 的 <code>Cat</code> 放入 <code>Cafe 元件</code></li>
+</ol>
+<blockquote>
+<p>這裡<code>&lt;&gt;&lt;/&gt;</code> 是JSX 的 <a target="_blank" rel="noopener" href="https://zh-hans.reactjs.org/docs/fragments.html">Fragments</a>，可以簡化多餘宣告 View 的麻煩</p>
+</blockquote>
+<h3 id="Class-Components"><a href="#Class-Components" class="headerlink" title="Class Components"></a>Class Components</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &quot;react&quot;;</span><br><span class="line">import &#123; Button, Text, View &#125; from &quot;react-native&quot;;</span><br><span class="line"></span><br><span class="line">class Cat extends Component &#123;</span><br><span class="line">  // 1</span><br><span class="line">  state = &#123; isHungry: true &#125;;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;View&gt;</span><br><span class="line">        &lt;Text&gt;</span><br><span class="line">          I am &#123;this.props.name&#125;, and I am</span><br><span class="line">          &#123;this.state.isHungry ? &quot; hungry&quot; : &quot; full&quot;&#125;!</span><br><span class="line">        &lt;/Text&gt;</span><br><span class="line">        &lt;Button</span><br><span class="line">          onPress=&#123;() =&gt; &#123;</span><br><span class="line">            // 3</span><br><span class="line">            this.setState(&#123; isHungry: false &#125;);</span><br><span class="line">          &#125;&#125;</span><br><span class="line">          disabled=&#123;!this.state.isHungry&#125;</span><br><span class="line">          title=&#123;</span><br><span class="line">            this.state.isHungry ? &quot;Pour me some milk, please!&quot; : &quot;Thank you!&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        /&gt;</span><br><span class="line">      &lt;/View&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Cafe extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;&gt;</span><br><span class="line">        &lt;Cat name=&quot;Munkustrap&quot; /&gt;</span><br><span class="line">        &lt;Cat name=&quot;Spot&quot; /&gt;</span><br><span class="line">      &lt;/&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default  Cafe;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>與 Function 方式不同的是 state 以 object 方式存放</p>
+</li>
+<li><p>元件中獲取 state 是通過 <code>this.state</code></p>
+</li>
+<li><p>修改狀態僅需 <code>this.setState()</code> 傳入要修改的 key-value 物件即可</p>
+</li>
+</ol>
+<blockquote>
+<p>不要給 state 直接賦值，使用 <code>this.setState</code> 才能讓 React 知道狀態的變化且觸發渲染。</p>
+</blockquote>
+<p>接下來就與 Function 類似拉</p>
+<br>
+
+<p>下篇繼續來學習更多核心元件用法</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2022/07/08/React-Native之旅Day4/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2022/07/05/React-Native之旅Day2-Core Components/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2022-07-06 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/React-Native/">React-Native<span>4</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

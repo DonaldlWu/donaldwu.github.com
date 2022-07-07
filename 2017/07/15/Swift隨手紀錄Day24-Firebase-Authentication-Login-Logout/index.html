@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>Swift隨手紀錄Day24-Firebase-Authentication-Login &amp; Logout | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="防止偷懶Day24
+今天來完成整個註冊、登入、登出程序
+首先先來釐清需求
+使用者打開APP時應該會進入HomeController
+這時我們應該先判斷這使用者是否有帳號登入過
+如果有就在navigationItem上更新這名使用者的名稱
+如果沒有就把畫面送到LoginController">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Swift隨手紀錄Day24-Firebase-Authentication-Login &amp; Logout"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> Swift隨手紀錄Day24-Firebase-Authentication-Login &amp; Logout</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>防止偷懶Day24</p>
+<p>今天來完成整個註冊、登入、登出程序</p>
+<p>首先先來釐清需求</p>
+<p>使用者打開APP時應該會進入HomeController</p>
+<p>這時我們應該先判斷這使用者是否有帳號登入過</p>
+<p>如果有就在navigationItem上更新這名使用者的名稱</p>
+<p>如果沒有就把畫面送到LoginController</p>
+<span id="more"></span>
+
+<p>首先來修改HomeController.swift裡面的程式碼</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">    <span class="keyword">let</span> newTeamButton <span class="operator">=</span> <span class="type">UIBarButtonItem</span>(title: <span class="string">&quot;New Team&quot;</span>, style: .plain, target: <span class="keyword">self</span>, action: <span class="keyword">#selector</span>(toSetNewTeamController))</span><br><span class="line">    navigationItem.rightBarButtonItem <span class="operator">=</span> newTeamButton</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> logoutButton <span class="operator">=</span> <span class="type">UIBarButtonItem</span>(title: <span class="string">&quot;Logout&quot;</span>, style: .plain, target: <span class="keyword">self</span>, action: <span class="keyword">#selector</span>(handleLogout))</span><br><span class="line">    navigationItem.leftBarButtonItem <span class="operator">=</span> logoutButton</span><br><span class="line">    checkUserIsLogin()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">checkUserIsLogin</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="type">FIRAuth</span>.auth()<span class="operator">?</span>.currentUser<span class="operator">?</span>.uid <span class="operator">==</span> <span class="literal">nil</span> &#123;</span><br><span class="line">        perform(<span class="keyword">#selector</span>(handleLogout), with: <span class="literal">nil</span>, afterDelay: <span class="number">0</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fetchUserSetNavBarTitle()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">fetchUserSetNavBarTitle</span>() &#123;</span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> uid <span class="operator">=</span> <span class="type">FIRAuth</span>.auth()<span class="operator">?</span>.currentUser<span class="operator">?</span>.uid <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">FIRDatabase</span>.database().reference().child(<span class="string">&quot;User&quot;</span>).child(uid).observeSingleEvent(of: .value, with: &#123; (snapshot) <span class="keyword">in</span></span><br><span class="line">        <span class="built_in">print</span>(snapshot)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> dictionary <span class="operator">=</span> snapshot.value <span class="keyword">as?</span> [String: <span class="keyword">Any</span>] &#123;</span><br><span class="line">            <span class="keyword">self</span>.navigationItem.title <span class="operator">=</span> dictionary[<span class="string">&quot;name&quot;</span>] <span class="keyword">as?</span> <span class="type">String</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, withCancel: <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">handleLogout</span>() &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> <span class="type">FIRAuth</span>.auth()<span class="operator">?</span>.signOut()</span><br><span class="line">    &#125; <span class="keyword">catch</span> <span class="keyword">let</span> logoutError &#123;</span><br><span class="line">        <span class="built_in">print</span>(logoutError)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> loginController <span class="operator">=</span> <span class="type">LoginController</span>()</span><br><span class="line">    loginController.homeController <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">    present(loginController, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我新增了兩個新的function跟修改了一個之前寫的function</p>
+<p>這裡新增的兩個新的function分別是<code>checkUserIsLogin</code>以及<code>fetchUserSetNavBarTitle</code></p>
+<p>在viewDidLoad時會執行<code>checkUserIsLogin</code>這個function</p>
+<p>裡面負責跟Firebase確認這支手機是否有登入過</p>
+<p>如果沒有就去執行<code>handleLogout</code>讓畫面移動到LoginController</p>
+<p>如果有就執行另一個新增的<code>fetchUserSetNavBarTitle</code>來更新從Firebase拿到的使用者名稱</p>
+<p>然後是修改後的<code>handleLogout</code>多做了兩件事情</p>
+<p>第一件事情是跟Firebase做登出的動作</p>
+<p>第二件事是在實作LoginController時把hemeController的reference加進去</p>
+<p>這樣做的目的是等等我們再處理完LoginController的登入或註冊之後可以直接來更新navigationItem的名稱</p>
+<p>p.s.記得import Firebase</p>
+<p>再來就進入LoginController.swift來處理登入跟註冊的程序</p>
+<p>一樣先上程式碼</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"><span class="keyword">import</span> Firebase</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LoginController</span>: <span class="title class_">AddMemberController</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> homeController: <span class="type">HomeController</span>?</span><br><span class="line">    <span class="keyword">var</span> profileImageTopAnchor: <span class="type">NSLayoutConstraint</span>?</span><br><span class="line">    <span class="keyword">var</span> emailTopAnchor: <span class="type">NSLayoutConstraint</span>?</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> loginSegmentedControl: <span class="type">UISegmentedControl</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> sc <span class="operator">=</span> <span class="type">UISegmentedControl</span>(items: [<span class="string">&quot;Login&quot;</span>, <span class="string">&quot;Register&quot;</span>])</span><br><span class="line">        sc.selectedSegmentIndex <span class="operator">=</span> <span class="number">0</span></span><br><span class="line">        sc.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        sc.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(handleChangeButtonTitle), for: .valueChanged)</span><br><span class="line">        <span class="keyword">return</span> sc</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> emailText: <span class="type">UITextField</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> text <span class="operator">=</span> <span class="type">UITextField</span>()</span><br><span class="line">        text.placeholder <span class="operator">=</span> <span class="string">&quot;email&quot;</span></span><br><span class="line">        text.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        text.layer.borderColor <span class="operator">=</span> <span class="type">UIColor</span>.cyan.cgColor</span><br><span class="line">        text.layer.borderWidth <span class="operator">=</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> text</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> passwordText: <span class="type">UITextField</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> text <span class="operator">=</span> <span class="type">UITextField</span>()</span><br><span class="line">        text.placeholder <span class="operator">=</span> <span class="string">&quot;password&quot;</span></span><br><span class="line">        text.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        text.isSecureTextEntry <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        text.layer.borderColor <span class="operator">=</span> <span class="type">UIColor</span>.cyan.cgColor</span><br><span class="line">        text.layer.borderWidth <span class="operator">=</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> text</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">lazy</span> <span class="keyword">var</span> loginButton: <span class="type">UIButton</span> <span class="operator">=</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> button <span class="operator">=</span> <span class="type">UIButton</span>()</span><br><span class="line">        button.translatesAutoresizingMaskIntoConstraints <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">        button.setTitle(<span class="string">&quot;Login&quot;</span>, for: .normal)</span><br><span class="line">        button.backgroundColor <span class="operator">=</span> .cyan</span><br><span class="line">        button.addTarget(<span class="keyword">self</span>, action: <span class="keyword">#selector</span>(handleLoginRegister), for: .touchUpInside)</span><br><span class="line">        <span class="keyword">return</span> button</span><br><span class="line">    &#125;()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">handleLoginRegister</span>() &#123;</span><br><span class="line">        <span class="keyword">if</span> loginSegmentedControl.selectedSegmentIndex <span class="operator">==</span> <span class="number">0</span> &#123;</span><br><span class="line">            handleLogin()</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            handleRegister()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">handleLogin</span>() &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> email <span class="operator">=</span> emailText.text, <span class="keyword">let</span> password <span class="operator">=</span> passwordText.text <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">FIRAuth</span>.auth()<span class="operator">?</span>.signIn(withEmail: email, password: password, completion: &#123; (user, error) <span class="keyword">in</span></span><br><span class="line">            <span class="keyword">if</span> error <span class="operator">!=</span> <span class="literal">nil</span> &#123;</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">self</span>.homeController<span class="operator">?</span>.fetchUserSetNavBarTitle()</span><br><span class="line">            <span class="keyword">self</span>.dismiss(animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">handleRegister</span>() &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> email <span class="operator">=</span> emailText.text, <span class="keyword">let</span> password <span class="operator">=</span> passwordText.text, <span class="keyword">let</span> name <span class="operator">=</span> nameText.text <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="type">FIRAuth</span>.auth()<span class="operator">?</span>.createUser(withEmail: email, password: password, completion: &#123; (user: <span class="type">FIRUser</span>?, error) <span class="keyword">in</span></span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> error <span class="operator">!=</span> <span class="literal">nil</span> &#123;</span><br><span class="line">                <span class="built_in">print</span>(error<span class="operator">!</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">guard</span> <span class="keyword">let</span> uid <span class="operator">=</span> user<span class="operator">?</span>.uid <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">let</span> ref <span class="operator">=</span> <span class="type">FIRDatabase</span>.database().reference(fromURL: <span class="string">&quot;https://hbcrecord-5a3d4.firebaseio.com/&quot;</span>)</span><br><span class="line">            <span class="keyword">let</span> userReference <span class="operator">=</span> ref.child(<span class="string">&quot;User&quot;</span>).child(uid)</span><br><span class="line">            <span class="keyword">let</span> accountValue <span class="operator">=</span> [<span class="string">&quot;email&quot;</span>: email, <span class="string">&quot;name&quot;</span>: name]</span><br><span class="line">            userReference.updateChildValues(accountValue, withCompletionBlock: &#123; (err, ref) <span class="keyword">in</span></span><br><span class="line">                </span><br><span class="line">                <span class="keyword">if</span> err <span class="operator">!=</span> <span class="literal">nil</span> &#123;</span><br><span class="line">                    <span class="built_in">print</span>(err<span class="operator">!</span>)</span><br><span class="line">                    <span class="keyword">return</span></span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">self</span>.homeController<span class="operator">?</span>.navigationItem.title <span class="operator">=</span> accountValue[<span class="string">&quot;name&quot;</span>]</span><br><span class="line">                <span class="keyword">self</span>.dismiss(animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">                </span><br><span class="line">            &#125;)</span><br><span class="line">            </span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">handleChangeButtonTitle</span>() &#123;</span><br><span class="line">        <span class="keyword">if</span> loginSegmentedControl.selectedSegmentIndex <span class="operator">==</span> <span class="number">0</span> &#123;</span><br><span class="line">            loginButton.setTitle(<span class="string">&quot;Login&quot;</span>, for: .normal)</span><br><span class="line">            nameText.isHidden <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">            profileImageTopAnchor<span class="operator">?</span>.constant <span class="operator">=</span> <span class="number">64</span></span><br><span class="line">            emailTopAnchor<span class="operator">?</span>.constant <span class="operator">=</span> <span class="number">8</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            loginButton.setTitle(<span class="string">&quot;Register&quot;</span>, for: .normal)</span><br><span class="line">            nameText.isHidden <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">            profileImageTopAnchor<span class="operator">?</span>.constant <span class="operator">=</span> <span class="number">32</span></span><br><span class="line">            emailTopAnchor<span class="operator">?</span>.constant <span class="operator">=</span> <span class="number">48</span></span><br><span class="line">            view.layoutIfNeeded()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">        <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">        profileImage.removeFromSuperview()</span><br><span class="line">        profileImage.removeConstraints(profileImage.constraints)</span><br><span class="line">        positionSegmentedControl.removeFromSuperview()</span><br><span class="line">        nameText.removeFromSuperview()</span><br><span class="line">        registerButton.removeFromSuperview()</span><br><span class="line">        </span><br><span class="line">        view.addSubview(profileImage)</span><br><span class="line">        view.addSubview(loginSegmentedControl)</span><br><span class="line">        view.addSubview(nameText)</span><br><span class="line">        view.addSubview(emailText)</span><br><span class="line">        view.addSubview(passwordText)</span><br><span class="line">        view.addSubview(loginButton)</span><br><span class="line">        nameText.isHidden <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        profileImageTopAnchor <span class="operator">=</span> profileImage.topAnchor.constraint(equalTo: view.topAnchor, constant: <span class="number">64</span>)</span><br><span class="line">        profileImageTopAnchor<span class="operator">?</span>.isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        profileImage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        profileImage.heightAnchor.constraint(equalToConstant: <span class="number">110</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        profileImage.widthAnchor.constraint(equalToConstant: <span class="number">110</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        loginSegmentedControl.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: <span class="number">8</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        loginSegmentedControl.leftAnchor.constraint(equalTo: view.leftAnchor, constant: <span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        loginSegmentedControl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: <span class="operator">-</span><span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        loginSegmentedControl.heightAnchor.constraint(equalToConstant: <span class="number">24</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        nameText.topAnchor.constraint(equalTo: loginSegmentedControl.bottomAnchor, constant: <span class="number">8</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        nameText.leftAnchor.constraint(equalTo: view.leftAnchor, constant: <span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        nameText.rightAnchor.constraint(equalTo: view.rightAnchor, constant: <span class="operator">-</span><span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        emailTopAnchor <span class="operator">=</span> emailText.topAnchor.constraint(equalTo: loginSegmentedControl.bottomAnchor, constant: <span class="number">8</span>)</span><br><span class="line">        emailTopAnchor<span class="operator">?</span>.isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        emailText.leftAnchor.constraint(equalTo: view.leftAnchor, constant: <span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        emailText.rightAnchor.constraint(equalTo: view.rightAnchor, constant: <span class="operator">-</span><span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        emailText.heightAnchor.constraint(equalToConstant: <span class="number">32</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        passwordText.topAnchor.constraint(equalTo: emailText.bottomAnchor, constant: <span class="number">8</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        passwordText.leftAnchor.constraint(equalTo: view.leftAnchor, constant: <span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        passwordText.rightAnchor.constraint(equalTo: view.rightAnchor, constant: <span class="operator">-</span><span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        passwordText.heightAnchor.constraint(equalToConstant: <span class="number">32</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        loginButton.topAnchor.constraint(equalTo: passwordText.bottomAnchor, constant: <span class="number">8</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        loginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: <span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        loginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: <span class="operator">-</span><span class="number">22</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        loginButton.heightAnchor.constraint(equalToConstant: <span class="number">50</span>).isActive <span class="operator">=</span> <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這裡一樣新增兩個新function跟修改一個舊function</p>
+<p>不過為了可以更新HomeController的navigationItem.title</p>
+<p>先新增一個homeController的物件</p>
+<p>然後把按下註冊&#x2F;登入按鈕的動作從舊的<code>handleRegister</code>換成新增的<code>handleLoginRegister</code></p>
+<p>在<code>handleLoginRegister</code>裡面用loginSegmentedControl所選擇的是login還是register來決定要呼叫哪個function</p>
+<p>如果是登入就呼叫新增的第二個function<code>handleLogin</code>來跟Firebase做登入的動作以及剛剛提到的更新navigationItem.title</p>
+<p>如果是註冊就呼叫之前寫的<code>handleRegister</code></p>
+<p>但這邊也對<code>handleRegister</code>做了點修改，首先是多傳了name這個值</p>
+<p>再來是註冊成功也會去修改homeController的navigationItem.title</p>
+<p>不過跟<code>handleLogin</code>裡面直接呼叫<code>fetchUserSetNavBarTitle</code>不同的是</p>
+<p>因為註冊時自己就有name這個數值，就不需要多跟Firebase要一次資料了</p>
+<p>所以直接把要傳出去註冊的name拿來用就好</p>
+<p>來看看完成品吧</p>
+<img src="/donaldwu.github.com/2017/07/15/Swift%E9%9A%A8%E6%89%8B%E7%B4%80%E9%8C%84Day24-Firebase-Authentication-Login-Logout/Day24Registerandlogin.gif" class="">
+
+
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2017/07/16/Swift隨手紀錄Day25-Fetch-Data-Form-Firebase-Database/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2017/07/14/Swift隨手紀錄Day23-利用Breakpoint進行Autolayout除錯/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2017-07-15 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/Swift/">Swift<span>32</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

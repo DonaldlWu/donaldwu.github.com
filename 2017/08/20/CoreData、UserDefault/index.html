@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>CoreData、UserDefault | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="作為一款記錄用的APP，比賽期間使用者不太可能只開著這款APP
+更別提意外跳出或是記憶體不足造成閃退的狀況了
+這時候就應該要把比賽中所記錄到的資訊儲存起來
+在APP打開的情況下去判斷之前是否有未完成的比賽
+有的話就拿回該有的資訊讓使用者繼續記錄
+至於要用什麼方式來儲存使用者紀錄的資料呢？">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="CoreData、UserDefault"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> CoreData、UserDefault</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>作為一款記錄用的APP，比賽期間使用者不太可能只開著這款APP</p>
+<p>更別提意外跳出或是記憶體不足造成閃退的狀況了</p>
+<p>這時候就應該要把比賽中所記錄到的資訊儲存起來</p>
+<p>在APP打開的情況下去判斷之前是否有未完成的比賽</p>
+<p>有的話就拿回該有的資訊讓使用者繼續記錄</p>
+<p>至於要用什麼方式來儲存使用者紀錄的資料呢？</p>
+<span id="more"></span>
+
+<p>有想過將資料完全存在後台，而現在使用儲存資料的Firebase realtime database確實很好用</p>
+<p>但考慮到用量以及資料儲存的方式，似乎沒有需要將大量之後不需要的資訊儲存在realtime database中</p>
+<p>接下來的選擇我想到了UserDefault，用來儲存是否有記錄中的狀態相當不錯</p>
+<p>但如果要儲存已經是一個個物件的比賽的相關紀錄處理上相對麻煩</p>
+<p>因此最後選擇使用了CoreData來儲存物件，UserDefault來儲存狀態的方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">saveToCoreData</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> appDel <span class="operator">=</span> <span class="type">UIApplication</span>.shared.delegate <span class="keyword">as?</span> <span class="type">AppDelegate</span></span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> context <span class="operator">=</span> appDel<span class="operator">?</span>.persistentContainer.viewContext <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> results <span class="operator">=</span> <span class="keyword">try</span> context.fetch(<span class="type">PlayingPlayer</span>.fetchRequest())</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// If CoreData already have data</span></span><br><span class="line">            <span class="keyword">if</span> results.count <span class="operator">&gt;=</span> <span class="number">9</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> (i,item) <span class="keyword">in</span> results.enumerated() &#123;</span><br><span class="line">                    <span class="keyword">let</span> editPlayer <span class="operator">=</span> item <span class="keyword">as?</span> <span class="type">PlayingPlayer</span></span><br><span class="line">                    <span class="keyword">if</span> editPlayer<span class="operator">?</span>.name <span class="operator">==</span> <span class="keyword">self</span>.players[i].name &#123;</span><br><span class="line">                        editPlayer<span class="operator">?</span>.mid <span class="operator">=</span> <span class="keyword">self</span>.players[i].mid</span><br><span class="line">                        editPlayer<span class="operator">?</span>.name <span class="operator">=</span> <span class="keyword">self</span>.players[i].name</span><br><span class="line">                        editPlayer<span class="operator">?</span>.position <span class="operator">=</span> <span class="keyword">self</span>.players[i].position</span><br><span class="line">                        editPlayer<span class="operator">?</span>.profileImage <span class="operator">=</span> <span class="keyword">self</span>.players[i].profileImage</span><br><span class="line">                        <span class="keyword">let</span> array <span class="operator">=</span> <span class="keyword">self</span>.players[i].recordArray</span><br><span class="line">                        <span class="keyword">let</span> data <span class="operator">=</span> <span class="type">NSKeyedArchiver</span>.archivedData(withRootObject: array)</span><br><span class="line">                        editPlayer<span class="operator">?</span>.recordArray <span class="operator">=</span> data <span class="keyword">as</span> <span class="type">NSData</span></span><br><span class="line">                        appDel<span class="operator">?</span>.saveContext()</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">            <span class="comment">// No Data</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">for</span> savedPlayer <span class="keyword">in</span> <span class="keyword">self</span>.players &#123;</span><br><span class="line">                    <span class="keyword">let</span> player <span class="operator">=</span> <span class="type">PlayingPlayer</span>(context: context)</span><br><span class="line">                    player.mid <span class="operator">=</span> savedPlayer.mid</span><br><span class="line">                    player.name <span class="operator">=</span> savedPlayer.name</span><br><span class="line">                    player.position <span class="operator">=</span> savedPlayer.position</span><br><span class="line">                    player.order <span class="operator">=</span> savedPlayer.order</span><br><span class="line">                    player.profileImage <span class="operator">=</span> savedPlayer.profileImage</span><br><span class="line">                    <span class="keyword">let</span> array <span class="operator">=</span> savedPlayer.recordArray</span><br><span class="line">                    <span class="keyword">let</span> data <span class="operator">=</span> <span class="type">NSKeyedArchiver</span>.archivedData(withRootObject: array)</span><br><span class="line">                    player.recordArray <span class="operator">=</span> data <span class="keyword">as</span> <span class="type">NSData</span></span><br><span class="line">                    appDel<span class="operator">?</span>.saveContext()</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>再進入紀錄頁面之前的TabBarController新增將目前物件存放到CoreData的function</p>
+<p>然後設定key為<code>gaming</code>的UserDefault為true，作為現在正在記錄中的狀態</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">UserDefaults</span>.standard.setValue(<span class="string">&quot;true&quot;</span>, forKey: <span class="string">&quot;gaming&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>接下來也得設定在使用者按下比賽結束的按鈕時將狀態設為false</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">UserDefaults</span>.standard.setValue(<span class="string">&quot;false&quot;</span>, forKey: <span class="string">&quot;gaming&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>然後使用者進入到在HomeController時拿出<code>gaming</code>來判斷是否正在記錄中</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">checkIsGaming</span>() &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> gamingStatus <span class="operator">=</span> <span class="type">UserDefaults</span>.standard.string(forKey: <span class="string">&quot;gaming&quot;</span>) <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> gamingStatus <span class="operator">==</span> <span class="string">&quot;true&quot;</span> &#123;</span><br><span class="line">            getDataFromCoreData()</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> gamingStatus <span class="operator">==</span> <span class="string">&quot;false&quot;</span> &#123;</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>最後如果確定正在記錄中就去把coreData中的資料取出來並把畫面帶到GameTabBarController</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">getDataFromCoreData</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> appDel <span class="operator">=</span> <span class="type">UIApplication</span>.shared.delegate <span class="keyword">as?</span> <span class="type">AppDelegate</span></span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> context <span class="operator">=</span> appDel<span class="operator">?</span>.persistentContainer.viewContext <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> result <span class="operator">=</span> <span class="keyword">try</span> context.fetch(<span class="type">PlayingPlayer</span>.fetchRequest())</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> result &#123;</span><br><span class="line">            <span class="keyword">let</span> thisPlayer <span class="operator">=</span> item <span class="keyword">as?</span> <span class="type">PlayingPlayer</span></span><br><span class="line">            <span class="comment">// Reconstruct by using map</span></span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> thisPlayer<span class="operator">?</span>.recordArray <span class="operator">!=</span> <span class="literal">nil</span> &#123;</span><br><span class="line">                <span class="keyword">let</span> unarchiveObject <span class="operator">=</span> <span class="type">NSKeyedUnarchiver</span>.unarchiveObject(with: (thisPlayer<span class="operator">?</span>.recordArray <span class="keyword">as</span> <span class="type">NSData</span>?)<span class="operator">!</span> <span class="keyword">as</span> <span class="type">Data</span>)</span><br><span class="line">                <span class="keyword">let</span> arrayObject <span class="operator">=</span> unarchiveObject <span class="keyword">as</span> <span class="type">AnyObject</span>! <span class="keyword">as!</span> <span class="type">Array</span>&lt;<span class="type">String</span>&gt;</span><br><span class="line">                <span class="keyword">let</span> array <span class="operator">=</span> arrayObject</span><br><span class="line">                <span class="keyword">self</span>.players.append(<span class="type">Player</span>(mid: thisPlayer<span class="operator">?</span>.mid, name: thisPlayer<span class="operator">?</span>.name, order: thisPlayer<span class="operator">?</span>.order, position: thisPlayer<span class="operator">?</span>.position, recordArray: array, profileImage: thisPlayer<span class="operator">?</span>.profileImage))</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">self</span>.players.append(<span class="type">Player</span>(mid: thisPlayer<span class="operator">?</span>.mid, name: thisPlayer<span class="operator">?</span>.name, order: thisPlayer<span class="operator">?</span>.order, position: thisPlayer<span class="operator">?</span>.position, recordArray: [], profileImage: thisPlayer<span class="operator">?</span>.profileImage))</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> players.count <span class="operator">&gt;=</span> <span class="number">9</span> &#123;</span><br><span class="line">        goToGameTabBarController()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">goToGameTabBarController</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> controller <span class="operator">=</span> <span class="type">GameTabBarController</span>()</span><br><span class="line">    controller.players <span class="operator">=</span> <span class="keyword">self</span>.players</span><br><span class="line">    present(controller, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看看執行結果</p>
+<img src="/donaldwu.github.com/2017/08/20/CoreData%E3%80%81UserDefault/CoreDataDemo.gif" class="">
+
+<p>這兩天也順便把程式碼再重構了一部分</p>
+<p>把太煩雜的Controller切割成我自己定義的function以及原本controller所繼承的function兩部份</p>
+<p>順便把儲存Player紀錄的array部分簡化了一下</p>
+<p>回頭看看真是滿臉黑人問號</p>
+<p>當初為何要寫得那麼複雜勒ＸＤ</p>
+<p>在簡化後現在也能把板凳人員加上去</p>
+<p>接下來應該會先處理比賽順序(先攻後攻)比分跟對手資料的部分</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2017/08/24/紀錄APP功能回顧/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2017/08/14/圖片cache機制/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2017-08-20 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/Swift/">Swift<span>32</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>nvim + shell script 漂浮視窗快速筆記 | Darren&#39;s Tech Playground</title>
+  <meta name="author" content="Deiren Wu">
+  
+  <meta name="description" content="雖然 mac 本身的 notes 就相當不錯
+甚至在更新到 Monterey 之後也新增了隨處可用 的功能
+第三方也有很多好用的軟體 Notion, hackmd 等等
+但身為一名懶惰到不想把手移動到觸控板上的人來說
+每次有些想法想快速紀錄一點想法
+按下 Option + Space 叫出 Alfred 快速搜尋叫出 notes 或其他軟體之後的操作總覺得就是差了一點點
+因此就決定自己來調整看看">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="nvim + shell script 漂浮視窗快速筆記"/>
+  <meta property="og:site_name" content="Darren&#39;s Tech Playground"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/donaldwu.github.com//atom.xml" title="Darren&#39;s Tech Playground" type="application/atom+xml">
+  
+  
+    <link href="/donaldwu.github.com/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/donaldwu.github.com/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/donaldwu.github.com/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/donaldwu.github.com/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/donaldwu.github.com/">Darren&#39;s Tech Playground</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/donaldwu.github.com/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/PoseCoachRedirect.html" title="PoseCoach Website.">
+			  <i class=""></i>Pose-Coach Official Website
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/donaldwu.github.com/about/darrenwu.html" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> nvim + shell script 漂浮視窗快速筆記</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>雖然 mac 本身的 notes 就相當不錯</p>
+<p>甚至在更新到 Monterey 之後也新增了<em>隨處可用</em> 的功能</p>
+<p>第三方也有很多好用的軟體 Notion, hackmd 等等</p>
+<p>但身為一名懶惰到不想把手移動到觸控板上的人來說</p>
+<p>每次有些想法想快速紀錄一點想法</p>
+<p>按下 <code>Option + Space</code> 叫出 Alfred 快速搜尋叫出 notes 或其他軟體之後的操作總覺得就是差了一點點</p>
+<p>因此就決定自己來調整看看</p>
+<span id="more"></span>
+
+<p>所以首先要確定目標</p>
+<p><em>Target: 鍵盤可以獨自完成從叫出筆記 -&gt; 寫筆記 -&gt; 關閉筆記這一連串動作，並繼續原本的作業</em></p>
+<p>再來確認一下現況</p>
+<ol>
+<li>目前切換 app 都是使用 Alfred 搜索進行切換</li>
+<li>notes 或 Notion 、hackmd 看起來後續操作都不太方便</li>
+</ol>
+<p>依照以上整理，切換看起來不會是大問題，問題是目前我用過的筆記軟體純用鍵盤的操作我都不太習慣</p>
+<p>既然這樣，那就換一款我熟的吧</p>
+<p>nvim + <a target="_blank" rel="noopener" href="https://github.com/glepnir/lspsaga.nvim">lspsaga</a></p>
+<p>看來是個不錯的選項</p>
+<p>nvim 跟 tmux 的 terminal 可以提供我熟悉的文檔操作</p>
+<p>而 lspsaga 可以提供漂亮的漂浮視窗並呼叫出 terminal</p>
+<p>可以叫出 terminal 也就代表我們可以執行自訂的 script 來做事</p>
+<hr>
+<p>那這個 script 我希望可以做到幾件事</p>
+<pre><code>1. 用日期為檔名建立一個新的 .md 檔案(如果檔案已存在就直接執行 2)
+2. 用 nvim 打開檔案，
+3. 並新增一行時間標題
+4. 移動至下一行並置中
+5. 開啟 insert mode
+</code></pre>
+<p>OK，那接下來就是要實作的細節</p>
+<ol>
+<li><p>lspsaga 叫出漂浮視窗叫出 teminal 並執行 script</p>
+</li>
+<li><p>新增 notetaker.script 執行 <em>新增&#x2F;編輯</em> 筆記文檔</p>
+</li>
+</ol>
+<p>根據 lspsaga 的文件，我們可以在設定檔內加上</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nnoremap &lt;silent&gt; nt &lt;cmd&gt;lua require(&#x27;lspsaga.floaterm&#x27;).open_float_terminal(&#x27;notetaker.sh&#x27;)&lt;CR&gt;</span><br></pre></td></tr></table></figure>
+
+<p>這樣只要在 nvim 的 normal mode 依序按下 nt 就會跳出 terminal 並執行 <code>notaker.sh</code> 這個命令了</p>
+<p>然後就是關鍵的 Script 內容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#/bin/bash</span><br><span class="line"></span><br><span class="line">noteFilename=&quot;/Users/wuderen/Desktop/Note/note-$(date +%Y-%m-%d).md&quot;</span><br><span class="line"></span><br><span class="line">if [ ! -f $noteFilename ]; then</span><br><span class="line">    echo &quot;# Notes for $date&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">nvim -c &quot;norm Go&quot; \</span><br><span class="line">    -c &quot;norm Go## $(date +%H:%M)&quot; \</span><br><span class="line">    -c &quot;norm G2o&quot; \</span><br><span class="line">    -c &quot;norm zz&quot; \</span><br><span class="line">    -c &quot;startinsert&quot; $noteFilename</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>然後來執行吧</p>
+<p>相信一定會很順利的…失敗</p>
+<p>首先要先把 <code>notetaker.sh</code> 放到 <code>/usr/local/bin</code> </p>
+<p>讓這個 script 可以順利在全域都可以執行</p>
+<p>然後調整一下檔案的權限，不然也是沒辦法在跳出來的終端上執行的 </p>
+<p><code>chmod u+x notetaker.sh</code></p>
+<p>完成之後就可以來試試看拉</p>
+<p>按下 nt 打開檔案 -&gt; 編輯文檔 -&gt; <code>Option + q</code> 離開</p>
+<img src=https://dl.dropboxusercontent.com/s/5g22qc0gll4phxu/notetaker.gif>
+
+<p>用起來還不錯 d(&#96;･∀･)b</p>
+<br>
+
+<p>參考資料</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=zB_3FIGRWRU&t=274s">Calin Leafshade: Note Taking in vim with markdown and pandoc and bears, oh my!</a></li>
+</ol>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/donaldwu.github.com/2022/03/09/關於App Store上架圖，你可能想知道的那些事/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/donaldwu.github.com/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/donaldwu.github.com/2021/09/08/TMUX入坑心得/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<body>
+    <h2 class="title">Support</h2>
+    <div class="likecoin-embed likecoin-button" data-liker-id="deirenwu" data-href="https://docs.like.co/developer/likecoin-button/"></div>
+    <script src="https://static.like.co/sdk/v1/button.js"></script>
+<body>
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+    <div id="disqus_thread" class="ds-thread">
+        <script type="text/javascript">
+            /**
+             * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+             * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+             */
+                /*
+                 var disqus_config = function () {
+                 this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                 this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                 };
+                 */
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://donaldlwu.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by
+                Disqus.</a></noscript>
+    </div>
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2021-11-30 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/donaldwu.github.com/tags/BASH/">BASH<span>2</span></a></li> <li><a href="/donaldwu.github.com/tags/nvim/">nvim<span>1</span></a></li> <li><a href="/donaldwu.github.com/tags/lspsaga/">lspsaga<span>1</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2022 Deiren Wu
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/donaldwu.github.com/js/jquery.imagesloaded.min.js"></script>
+<script src="/donaldwu.github.com/js/gallery.js"></script>
+<script src="/donaldwu.github.com/js/bootstrap.min.js"></script>
+<script src="/donaldwu.github.com/js/main.js"></script>
+<script src="/donaldwu.github.com/js/search.js"></script> 
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/donaldwu.github.com/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>
